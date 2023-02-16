@@ -5,6 +5,7 @@ import Index from './screens/Index-page/index-page.js'
 import Login from './screens/Login-page/loginPage.js'
 import Marketplace from './screens/Market-Place/Marketplace';
 import DetailPage from './screens/Detail-Page/DetailPage';
+import Breadcrumb from './components/BreadCrumb/breadcrumb';
 
 
 function App() {

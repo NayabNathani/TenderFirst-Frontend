@@ -1,37 +1,39 @@
 import React from 'react'
+import { BrowserRouter as Router, Route, Link, useLocation } from 'react-router-dom';
 
-function breadcrumb() {
+
+const Breadcrumb= ()=> {
+
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter((x) => x);
+
   return (
     <>
-    <main id="main">
-        {/* <!-- ======= Breadcrumbs ======= --> */}
-    <section class="breadcrumbs">
-      <div class="container">
+      <main id="main">
+        <section className="breadcrumbs">
+          <div className="container">
+            <div className="d-flex justify-content-between align-items-center">
+              <h2>{pathnames}</h2>
+              <nav>
+                <ol>
+                  <li>
+                    <Link to="/">Home</Link>
+                  </li>
+                  {pathnames.map((name, index) => {
+                    const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
 
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Inner Page</h2>
-          <ol>
-            <li><a href="index.html">HomePage</a></li>
-            <li>Next Page</li>
-          </ol>
-        </div>
-
-      </div>
-    </section>
-    {/* <!-- End Breadcrumbs --> */}
-
-    <section class="inner-page">
-      <div class="container">
-        <p>
-          Example inner page template
-        </p>
-      </div>
-    </section>
-
-  </main>
+                    return (
+                      <li key={index}>
+                        <Link to={routeTo}>{name}</Link>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </nav>
+            </div></div></section></main>
     </>
 
   )
 }
 
-export default breadcrumb
+export default Breadcrumb
