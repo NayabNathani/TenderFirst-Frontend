@@ -13,6 +13,7 @@
     "react-bootstrap": "^2.6.0",
     "react-components": "^0.5.1",
     "react-dom": "^18.2.0",
+    "react-paginate": "^8.1.4",
     "react-router-dom": "^6.4.4",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.0",
