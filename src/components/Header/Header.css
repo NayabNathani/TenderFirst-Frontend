@@ -1,0 +1,10 @@
+.navbar-nav.ml-auto {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    margin-top: 5px;
+  }
+  

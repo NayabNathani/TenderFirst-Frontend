@@ -26,29 +26,6 @@ function footer() {
               </div>
             </div>
           </div>
-
-          {/* <div className="col-lg-3 col-md-6 footer-links">
-            <h4>Useful Links</h4>
-            <ul>
-              <li><i className="bx bx-chevron-right"></i> <a href="#hero">Home</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#about">About us</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
-            </ul>
-          </div> */}
-
-          {/* <div className="col-lg-3 col-md-6 footer-links">
-            <h4>Our Services</h4>
-            <ul>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-              <li><i className="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
-            </ul>
-          </div> */}
-
         </div>
       </div>
     </div>
@@ -59,7 +36,7 @@ function footer() {
       </div>
       <div className="credits">
         
-        Designed by <a href="#">TEAM GURU GANTAL</a>
+        Designed by <a href="#">TEAM Tender First</a>
       </div>
     </div>
   </footer>
