@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Breadcrumb from "../../components/BreadCrumb/breadcrumb";
 import { Heading } from "@chakra-ui/react";
-import "./OpenTender.css"
-import Footer from "../../components/Footer/footer"
-import {toast} from 'react-hot-toast'
+import "./OpenTender.css";
+import Footer from "../../components/Footer/footer";
+import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useEffect } from "react";
 
 const OpenTender = () => {
   const initialFormData = {
@@ -22,6 +23,18 @@ const OpenTender = () => {
     endDate: "",
   };
   const [formData, setFormData] = useState(initialFormData);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios.get('https://example.com/getCategory') // Replace with your getCategory API endpoint
+      .then(response => {
+        setCategories(response.data.categories); // Assumes the API returns an array of category objects with a 'category' property
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -56,9 +69,9 @@ const OpenTender = () => {
       <Heading textAlign={"center"} mt={"10px"} mb={"20px"}>
         Open A Tender
       </Heading>
-      <Form onSubmit={handleSubmit} style={{ paddingBottom: '20px' }}>
+      <Form onSubmit={handleSubmit} style={{ paddingBottom: "20px" }}>
         <Form.Group controlId="title">
-          <Form.Label style={{paddingLeft:'10px'}}>Title</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Title</Form.Label>
           <Form.Control
             type="text"
             name="title"
@@ -68,7 +81,7 @@ const OpenTender = () => {
           />
         </Form.Group>
         <Form.Group controlId="description">
-          <Form.Label style={{paddingLeft:'10px'}}>Description</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Description</Form.Label>
           <Form.Control
             as="textarea"
             rows={2}
@@ -80,7 +93,7 @@ const OpenTender = () => {
           />
         </Form.Group>
         <Form.Group controlId="quantity">
-          <Form.Label style={{paddingLeft:'10px'}}>Quantity</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Quantity</Form.Label>
           <Form.Control
             type="number"
             name="quantity"
@@ -90,7 +103,9 @@ const OpenTender = () => {
           />
         </Form.Group>
         <Form.Group controlId="financialStability">
-          <Form.Label style={{paddingLeft:'10px'}}>Financial Stability</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>
+            Financial Stability
+          </Form.Label>
           <Form.Select
             value={formData.financialStability}
             onChange={handleChange}
@@ -102,10 +117,10 @@ const OpenTender = () => {
             <option value="unstable">Unstable</option>
           </Form.Select>
         </Form.Group>
-        <Form.Group controlId="financialStability">
-          <Form.Label style={{paddingLeft:'10px'}}>Pool</Form.Label>
+        <Form.Group controlId="pool">
+          <Form.Label style={{ paddingLeft: "10px" }}>Pool</Form.Label>
           <Form.Select
-            value={formData.financialStability}
+            value={formData.pool}
             onChange={handleChange}
             required
             className="formDrop"
@@ -116,7 +131,9 @@ const OpenTender = () => {
           </Form.Select>
         </Form.Group>
         <Form.Group controlId="requiredExperience">
-          <Form.Label style={{paddingLeft:'10px'}}>Required Experience</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>
+            Required Experience
+          </Form.Label>
           <Form.Control
             type="number"
             name="requiredExperience"
@@ -126,7 +143,7 @@ const OpenTender = () => {
           />
         </Form.Group>
         <Form.Group controlId="timeLimit">
-          <Form.Label style={{paddingLeft:'10px'}}>Time Limit</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Time Limit</Form.Label>
           <Form.Control
             type="number"
             name="timeLimit"
@@ -135,7 +152,7 @@ const OpenTender = () => {
             required
           />
         </Form.Group>
-        <Form.Group controlId="category">
+        {/* <Form.Group controlId="category">
           <Form.Label style={{paddingLeft:'10px'}}>Category</Form.Label>
           <Form.Control
             type="text"
@@ -144,9 +161,27 @@ const OpenTender = () => {
             onChange={handleChange}
             required
           />
+        </Form.Group> */}
+
+        <Form.Group controlId="category">
+          <Form.Label style={{ paddingLeft: "10px" }}>Category</Form.Label>
+          <Form.Control
+            as="select" // Use a select element instead of a text input to display the options
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.title}>
+                {category.title}
+              </option>
+            ))}
+          </Form.Control>
         </Form.Group>
         <Form.Group controlId="startDate">
-          <Form.Label style={{paddingLeft:'10px'}}>Start Date</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Start Date</Form.Label>
           <Form.Control
             type="date"
             name="startDate"
@@ -156,7 +191,7 @@ const OpenTender = () => {
           />
         </Form.Group>
         <Form.Group controlId="endDate">
-          <Form.Label style={{paddingLeft:'10px'}}>End Date</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>End Date</Form.Label>
           <Form.Control
             type="date"
             name="endDate"
@@ -183,7 +218,7 @@ const OpenTender = () => {
           </Button>
         </div>
       </Form>
-      <Footer/>
+      <Footer />
     </>
   );
 };

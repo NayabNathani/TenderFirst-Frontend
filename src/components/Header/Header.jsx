@@ -8,6 +8,8 @@ import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { IoMdPerson } from "react-icons/io";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { logout } from "../../redux/actions/user";
+import { useDispatch, useSelector } from "react-redux";
 
 const DropdownMenu = ({user}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,11 +22,18 @@ const DropdownMenu = ({user}) => {
     setIsOpen(false);
   };
 
+  const dispatch = useDispatch();
+  const logoutHandler = ()=>{
+    dispatch(logout());
+
+}
+
+
   return (
     <Flex alignItems="center">
       <Box>
         <Text color="white" fontSize='x-small' mt={'16px'} mb={'6px'}>
-          {user.name}
+          {user.firstName + " " + user.lastName}
         </Text>
         <Text color="white" fontSize="x-small" pr={'20px'}>
           {user.walletAddress}
@@ -32,9 +41,10 @@ const DropdownMenu = ({user}) => {
       </Box>
       <Avatar
         size="sm"
-        name={user.name}
+        name={user.firstName}
         bg={"#ECC94B"}
-        src={user.avatarUrl}
+        src={"https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"}
+        // {user.avatarUrl}
         onClick={handleMenuToggle}
         cursor="pointer"
         boxSize={30}
@@ -70,7 +80,7 @@ const DropdownMenu = ({user}) => {
           <Link to="/">
             <Flex alignItems="center" px={2} py={1} cursor="pointer">
               <FaSignOutAlt size={20} />
-              <Text ml={2}>Logout</Text>
+              <Text ml={2} onClick={logoutHandler}>Logout</Text>
             </Flex>
           </Link>
         </Box>
@@ -79,18 +89,20 @@ const DropdownMenu = ({user}) => {
   );
 };
 
-const Header = ({ isAllowed }) => {
+const Header = ({ isAuthenticated }) => {
 
-    const user = {
-        name: "Nayab Nathani",
-        avatarUrl:
-          "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg",
-        walletAddress: "0x1234567890ABCDEF",
-      };
+    // const user = {
+    //     name: "Nayab Nathani",
+    //     avatarUrl:
+    //       "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg",
+    //     walletAddress: "0x1234567890ABCDEF",
+    //   };
+
+    const {user} = useSelector(state => state.user)
 
   return (
     <>
-      {isAllowed ? (
+      {isAuthenticated ? (
         <>
           <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>

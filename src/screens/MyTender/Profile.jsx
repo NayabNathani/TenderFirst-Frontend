@@ -17,16 +17,39 @@ import Breadcrumb from "../../components/BreadCrumb/breadcrumb";
 import Footer from "../../components/Footer/footer";
 import { Link } from "react-router-dom";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
+// import axios from "axios";
 
-const Profile = ({ user }) => {
+// {
+//   name: "Ali Nayab Nathani",
+//   email: "nayabnathani@gmail.com",
+//   phone: "03313999101",
+//   address: "Garden East, Karachi",
+//   avatar: {
+//     url: "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg",
+//   },
+// }
+
+const Profile = ({user}) => {
   const [showModal, setShowModal] = useState(false);
   const [newAvatar, setNewAvatar] = useState(null);
-  const [User, setUser] = useState({user});
+  // const [user, setUser] = useState();
 
+  //When Api called
+  // useEffect(() => {
+  //   axios
+  //     .get('https://example.com/api/user')
+  //     .then((response) => {
+  //       setUser(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
 
-  useEffect(() => {
-    setUser(user);
-  }, [user]);
+  //dummyData working
+  // useEffect(() => {
+  //   setUser(user);
+  // }, [user]);
 
   const handleFileInput = (event) => {
     const file = event.target.files[0];
@@ -37,16 +60,37 @@ const Profile = ({ user }) => {
     setShowModal(!showModal);
   };
 
-  // const handleConfirmChange = () => {
-  //   const newAvatarUrl = URL.createObjectURL(newAvatar);
-  //   console.log(newAvatarUrl);
-  //   setUser((prevState) => ({
-  //     ...prevState,
-  //     avatar: { url: newAvatarUrl },
-  //   }));
-  //   setNewAvatar(null);
-  //   setShowModal(false);
+  // FOR API CALLING
+  // const handleConfirmChange = async () => {
+  //   Send the selected file to the server
+  //   const formData = new FormData();
+  //   formData.append('file', newAvatar);
+
+  //   try {
+  //     await axios.put('https://example.com/api/user/avatar', formData);
+  //     const newAvatarUrl = URL.createObjectURL(newAvatar);
+  //     setUser((prevState) => ({
+  //       ...prevState,
+  //       avatar: { url: newAvatarUrl },
+  //     }));
+  //     setNewAvatar(null);
+  //     setShowModal(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
   // };
+
+  //Dummy WOrking
+  const handleConfirmChange = () => {
+    const newAvatarUrl = URL.createObjectURL(newAvatar);
+    console.log(newAvatarUrl);
+    setUser((prevState) => ({
+      ...prevState,
+      avatar: { url: newAvatarUrl },
+    }));
+    setNewAvatar(null);
+    setShowModal(false);
+  };
 
   const AvatarModal = () => {
     return (
@@ -74,7 +118,7 @@ const Profile = ({ user }) => {
               outline
               className="ms-1"
               color="warning"
-              // onClick={handleConfirmChange}
+              onClick={handleConfirmChange}
             >
               Save changes
             </MDBBtn>
@@ -86,44 +130,44 @@ const Profile = ({ user }) => {
 
   return (
     <>
-    <Breadcrumb />
-    <section style={{ backgroundColor: "#eee" }}>
-      <MDBContainer className="py-5">
-        <MDBRow>
-          <MDBCol lg="4">
-            <MDBCard className="mb-4">
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src={
-                    newAvatar
-                      ? URL.createObjectURL(newAvatar)
-                      : "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"
-                  }
-                  alt="avatar"
-                  className="rounded-circle"
-                  style={{ width: "150px" }}
-                  fluid
-                />
-                {/* <p className="text-muted mb-1">Full Stack Developer</p> */}
-                <p className="text-muted mb-4">{user.address}</p>
-                <div className="d-flex justify-content-center mb-2">
-                  <Link to="/updateprofile">
+      <Breadcrumb />
+      <section style={{ backgroundColor: "#eee" }}>
+        <MDBContainer className="py-5">
+          <MDBRow>
+            <MDBCol lg="4">
+              <MDBCard className="mb-4">
+                <MDBCardBody className="text-center">
+                  <MDBCardImage
+                    src={
+                      newAvatar
+                        ? URL.createObjectURL(newAvatar)
+                        : "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"
+                    }
+                    alt="avatar"
+                    className="rounded-circle"
+                    style={{ width: "150px" }}
+                    fluid
+                  />
+                  <p className="text-muted mb-1">Full Stack Developer</p>
+                  <p className="text-muted mb-4">{user.address}</p>
+                  <div className="d-flex justify-content-center mb-2">
+                    <Link to="/updateprofile">
+                      <MDBBtn
+                        outline
+                        color="dark"
+                        style={{ height: "36px", overflow: "visible" }}
+                      >
+                        Edit profile
+                      </MDBBtn>
+                    </Link>
                     <MDBBtn
                       outline
-                      color="dark"
-                      style={{ height: "36px", overflow: "visible" }}
+                      className="ms-1"
+                      color="warning"
+                      onClick={toggleModal}
                     >
-                      Edit profile
-                    </MDBBtn>
-                  </Link>
-                  <MDBBtn
-                    outline
-                    className="ms-1"
-                    color="warning"
-                    onClick={toggleModal}
-                  >
-                    {" "}
-                    Change Picture
+                      {" "}
+                      Change Picture
                     </MDBBtn>
                   </div>
                 </MDBCardBody>
@@ -139,7 +183,7 @@ const Profile = ({ user }) => {
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
-                        {user.firstName + " " + user.lastName}
+                        {user.name}
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>
@@ -161,7 +205,7 @@ const Profile = ({ user }) => {
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
-                        {user.contactNumber}
+                        {user.phone}
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>
@@ -172,20 +216,18 @@ const Profile = ({ user }) => {
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
-                        {user.contactNumber}
+                        {user.phone}
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>
                   <hr />
                   <MDBRow>
                     <MDBCol sm="3">
-                      <MDBCardText>Organization Name</MDBCardText>
+                      <MDBCardText>Address</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
-                        {
-                        user.organizationName? user.organizationName : "None"
-                        }
+                        {user.address}
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>

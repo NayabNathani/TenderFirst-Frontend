@@ -9,7 +9,11 @@ const DetailPage = () => {
     <>
         <Breadcrumb/>
         <DetailCompo/>
-        <Footer/>
+        {/* <div style={{ position: 'absolute', bottom: 0, width: '100%' }}> */}
+        <br/>
+        <div>
+        <Footer />
+      </div>
     </>
   )
 }

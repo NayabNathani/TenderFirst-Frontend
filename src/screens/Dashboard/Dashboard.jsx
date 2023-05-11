@@ -4,6 +4,8 @@ import { Box, Text, Heading,Flex} from "@chakra-ui/react";
 import Button from 'react-bootstrap/Button';
 import { useEffect } from "react";
 import './Dashboard.css';
+import { useSelector } from "react-redux";
+import {useNavigate} from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -62,6 +64,15 @@ const Dashboard = () => {
           status: 'Closed'
         }
       ];
+
+      const { isAuthenticated } = useSelector((state) => state.user);
+      const navigate = useNavigate();
+
+      useEffect(() => {
+        if (!isAuthenticated) {
+          navigate("/login");
+        }
+      }, [isAuthenticated]);
 
       
 

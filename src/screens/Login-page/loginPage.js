@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import Footer from '../../components/Footer/footer'; 
 import * as Components from "./Components";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/actions/user";
+import { useDispatch, useSelector } from "react-redux";
+import { login, register } from "../../redux/actions/user";
+import { toast } from "react-hot-toast";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage= ()=> {
 
@@ -11,9 +14,17 @@ const LoginPage= ()=> {
     const [password, setPassword] = useState("");
     const [firstName, setFname] = useState("");
     const [lastName, setLname] = useState("");
-    const [contact, setContact] = useState("");
+    const [contactNumber, setContactNumber] = useState("");
+    const [organizationName, setOrganizationName] = useState("");
+    const [pool, setPool] = useState("");
+    const [category, setCategory] = useState([]);
+
+    const { user, error, isAuthenticated } = useSelector(
+      (state) => state.user
+    );
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     function handleLoginSubmit(event) {
       event.preventDefault();
@@ -22,21 +33,48 @@ const LoginPage= ()=> {
 
     function handleSignUpSubmit(event) {
       event.preventDefault();
-      console.log("Clicked")
+      const myForm = new FormData();
+      myForm.append("firstName",firstName);
+      myForm.append("lastName",lastName);
+      myForm.append("email",email);
+      myForm.append("password",password);
+      myForm.append("contactNumber",contactNumber);
+      myForm.append("organizationName",organizationName);
+      myForm.append("pool",pool);
+      myForm.append("category",category);
+      
+      dispatch(register(myForm));
+    };
 
-    }
+    useEffect(() => {
+      if (error) {
+        toast.error("Incorrect Email/Password!");
+        dispatch({ type: "clearError" });
+      }
+      if (isAuthenticated) {
+        if(user && user.firstName) {
+          toast.success(`Welcome Back ${user.firstName}`);
+          navigate("/dashboard");
+        } else {
+          toast.success(`Successfully registered!`);
+        }
+      }
+    }, [dispatch, error, isAuthenticated, user]);
 
   return (
     <>
-    <Components.Container>
-      <Components.SignUpContainer signingIn={signIn}>
+    <Components.Container style={{maxWidth:"100%",height:"650px"}}>
+      <Components.SignUpContainer signingIn={signIn} >
         <Components.Form onSubmit={handleSignUpSubmit}>
           <Components.Title>Create Account</Components.Title>
           <Components.Input type="text" value = {firstName} placeholder="First Name" onChange={(e) => {setFname(e.target.value)}}/>
           <Components.Input type="text" value = {lastName} placeholder="Last Name" onChange={(e) => {setLname(e.target.value)}}/>
           <Components.Input type="email" value = {email} placeholder="Email" onChange={(e) => {setEmail(e.target.value)}}/>
           <Components.Input type="password" value = {password} placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
-          <Components.Input type="text" value = {contact} placeholder="Contact Number" onChange={(e) => {setContact(e.target.value)}}/>
+          <Components.Input type="text" value = {contactNumber} placeholder="Contact Number" onChange={(e) => {setContactNumber(e.target.value)}}/>
+          <Components.Input type="text" value = {organizationName} placeholder="Organization Name" onChange={(e) => {setOrganizationName(e.target.value)}}/>
+          <Components.Input type="text" value = {pool} placeholder="Pool" onChange={(e) => {setPool(e.target.value)}}/>
+          <Components.Input type="text" value = {category} placeholder="Category" onChange={(e) => {setCategory(e.target.value)}}/>
           <Components.Button>Sign Up</Components.Button>
         </Components.Form>
       </Components.SignUpContainer>
