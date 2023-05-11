@@ -30,30 +30,27 @@ export const logout = () => async(dispatch)=>{
     }
 };
 
-export const register = formdata => async (dispatch) => {
+export const registerUser = (firstName,lastName,email,password,contactNumber,organizationName,pool,category) => async (dispatch) => {
     try {
       dispatch({ type: "registerRequest" });
   
-      const { data } = await axios.post(
+      const response = await axios.post(
         `${server}/user/signup`,
-        formdata,
-        {
-          headers: {
-            "Content-type": "multipart/form-data",
-          },
-          
+      {firstName,lastName,email,password,contactNumber,organizationName,pool,category},
+      {
+        headers:{
+            "Content-type":"application/json"
         }
+      }
       );
   
       // Dispatch an action object with the necessary data
       dispatch({
         type: "registerSuccess",
-        payload: { data },
+        payload: response.data ,
       });
-  
-      localStorage.setItem("isAuthenticated", true);
     } catch (error) {
-      dispatch({ type: "registerFail" });
+      dispatch({ type: "registerFail", payload: error.message });
     }
   };
   

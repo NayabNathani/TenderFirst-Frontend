@@ -43,13 +43,12 @@ const MyTenders = ({user}) => {
 
     const fetchTenders = async () => {
       setIsLoading(true);
-      const response = await axios.get(`https://fc1c-39-48-222-11.ngrok-free.app/tender?tenderee=${user._id}`);
-      // const response = await axios.get(`https://fc1c-39-48-222-11.ngrok-free.app/category`);
+      const response = await axios.get(`https://49f9-39-48-195-219.ngrok-free.app/tender?tenderee=${user._id}`);
       // &_page=${currentPage}&limit=10
-      const mappedTenders = response.data.map((tender) => ({
-        id: tender._id,
-        title: tender.title,
-        body: tender.description,
+      const mappedTenders = response.data.map((tenderee) => ({
+        id: tenderee._id,
+        title: tenderee.title,
+        body: tenderee.description,
       }));
       setTenders((prevTenders) => [...prevTenders, ...mappedTenders]);
       setCurrentPage(currentPage + 1);
@@ -92,13 +91,13 @@ const MyTenders = ({user}) => {
           </thead>
           <tbody>
             {
-            tenders.map((tender, index=0) => (
-              <tr key={tender.id}>
+            tenders.map((tenderee, index=0) => (
+              <tr key={tenderee.id}>
                 <td>{index + 1}</td>
-                <td>{tender.title}</td>
-                <td>{tender.body}</td>
+                <td>{tenderee.title}</td>
+                <td>{tenderee.body}</td>
                 <td>
-                  <Link to={`/tender/${tender._id}`}>View Details</Link>
+                  <Link to={`/tender/${tenderee._id}`}>View Details</Link>
                 </td>
               </tr>
             ))

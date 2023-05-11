@@ -21,8 +21,8 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 const Profile = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
   const [newAvatar, setNewAvatar] = useState(null);
-  const [User, setUser] = useState({user});
-
+  const [User, setUser] = useState({ user });
+  const avatarUrl = "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png";
 
   useEffect(() => {
     setUser(user);
@@ -37,16 +37,16 @@ const Profile = ({ user }) => {
     setShowModal(!showModal);
   };
 
-  // const handleConfirmChange = () => {
-  //   const newAvatarUrl = URL.createObjectURL(newAvatar);
-  //   console.log(newAvatarUrl);
-  //   setUser((prevState) => ({
-  //     ...prevState,
-  //     avatar: { url: newAvatarUrl },
-  //   }));
-  //   setNewAvatar(null);
-  //   setShowModal(false);
-  // };
+  const handleConfirmChange = () => {
+    const newAvatarUrl = URL.createObjectURL(newAvatar);
+    console.log(newAvatarUrl);
+    setUser((prevState) => ({
+      ...prevState,
+      avatar: { url: newAvatarUrl },
+    }));
+    setNewAvatar(null);
+    setShowModal(false);
+  };
 
   const AvatarModal = () => {
     return (
@@ -74,7 +74,7 @@ const Profile = ({ user }) => {
               outline
               className="ms-1"
               color="warning"
-              // onClick={handleConfirmChange}
+              onClick={handleConfirmChange}
             >
               Save changes
             </MDBBtn>
@@ -84,46 +84,47 @@ const Profile = ({ user }) => {
     );
   };
 
+
+
   return (
     <>
-    <Breadcrumb />
-    <section style={{ backgroundColor: "#eee" }}>
-      <MDBContainer className="py-5">
-        <MDBRow>
-          <MDBCol lg="4">
-            <MDBCard className="mb-4">
-              <MDBCardBody className="text-center">
-                <MDBCardImage
+      <Breadcrumb />
+      <section style={{ backgroundColor: "#eee" }}>
+        <MDBContainer className="py-5">
+          <MDBRow>
+            <MDBCol lg="4">
+              <MDBCard className="mb-4">
+                <MDBCardBody className="text-center">
+                  <MDBCardImage
                   src={
                     newAvatar
                       ? URL.createObjectURL(newAvatar)
-                      : "https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"
+                      : "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png"
                   }
-                  alt="avatar"
+                  alt={avatarUrl}
                   className="rounded-circle"
                   style={{ width: "150px" }}
                   fluid
                 />
-                {/* <p className="text-muted mb-1">Full Stack Developer</p> */}
-                <p className="text-muted mb-4">{user.address}</p>
-                <div className="d-flex justify-content-center mb-2">
-                  <Link to="/updateprofile">
+                  <p className="text-muted mb-4">{user.address}</p>
+                  <div className="d-flex justify-content-center mb-2">
+                    <Link to="/updateprofile">
+                      <MDBBtn
+                        outline
+                        color="dark"
+                        style={{ height: "36px", overflow: "visible" }}
+                      >
+                        Edit profile
+                      </MDBBtn>
+                    </Link>
                     <MDBBtn
                       outline
-                      color="dark"
-                      style={{ height: "36px", overflow: "visible" }}
+                      className="ms-1"
+                      color="warning"
+                      onClick={toggleModal}
                     >
-                      Edit profile
-                    </MDBBtn>
-                  </Link>
-                  <MDBBtn
-                    outline
-                    className="ms-1"
-                    color="warning"
-                    onClick={toggleModal}
-                  >
-                    {" "}
-                    Change Picture
+                      {" "}
+                      Change Picture
                     </MDBBtn>
                   </div>
                 </MDBCardBody>
@@ -183,9 +184,7 @@ const Profile = ({ user }) => {
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
-                        {
-                        user.organizationName? user.organizationName : "None"
-                        }
+                        {user.organizationName ? user.organizationName : "None"}
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>

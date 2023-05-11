@@ -37,30 +37,27 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/detailpage" element={<DetailPage />} />
-            <Route path="/opentender" element={<OpenTender />} />
-            </Routes>
-            {/* {
+            {
               isAuthenticated ? (
-            <>
-              
-              <Route path="/profile" element={<Profile user={user} />} />
-              <Route path="/updateprofile" element={<UpdateProfile />} />
-              <Route path="/mytender" element={<MyTenders user={user} />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/opentender" element={<OpenTender />} />
-              <Route path="/detailpage" element={<DetailPage />} />
-            </>
+                <>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile user={user} />} />
+                  <Route path="/updateprofile" element={<UpdateProfile />} />
+                  <Route path="/mytender" element={<MyTenders user={user} />} />
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/opentender" element={<OpenTender />} />
+                  <Route path="/detailpage" element={<DetailPage />} />
+                </>
               ) : (
-              <Route path="/login" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<Navigate to="/login" />} />
               )
-            } */}
+            }
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
 
 
-          
 
           <Toaster />
         </>

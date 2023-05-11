@@ -44,14 +44,13 @@ export const userReducer = createReducer(initialState, {
   },
   registerSuccess: (state, action) => {
     state.loading = false;
-    state.isAuthenticated = true;
-    state.user = action.payload.result;
-    localStorage.setItem("isAuthenticated", true);
+    state.isAuthenticated = false;
+    state.registerSuccess= true;
   },
   registerFail: (state, action) => {
     state.loading = false;
     state.isAuthenticated = false;
-    state.error = true;
+    state.registerSuccess= false;
   },
   
   clearError: (state) => {

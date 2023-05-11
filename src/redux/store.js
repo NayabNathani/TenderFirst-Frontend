@@ -19,4 +19,4 @@ export const store = configureStore({
 export const persistor = persistStore(store); // Add this line to export persistor
 
 export default store;
-export const server = "https://fc1c-39-48-222-11.ngrok-free.app";
+export const server = "https://49f9-39-48-195-219.ngrok-free.app";

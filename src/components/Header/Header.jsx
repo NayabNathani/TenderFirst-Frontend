@@ -41,10 +41,10 @@ const DropdownMenu = ({user}) => {
       </Box>
       <Avatar
         size="sm"
-        name={user.firstName}
+        name={user.firstName+" "+user.lastName}
         bg={"#ECC94B"}
-        src={"https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"}
-        // {user.avatarUrl}
+        src={user.avatarUrl}
+        //{"https://res.cloudinary.com/dqelmz4vt/image/upload/v1683246415/pxzcc5nhzbzwogsyrkbd.jpg"}
         onClick={handleMenuToggle}
         cursor="pointer"
         boxSize={30}

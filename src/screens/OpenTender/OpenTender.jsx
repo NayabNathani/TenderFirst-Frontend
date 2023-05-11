@@ -8,6 +8,7 @@ import Footer from "../../components/Footer/footer";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useEffect } from "react";
+import CheckboxDropdown from "./CheckboxDropdown";
 
 const OpenTender = () => {
   const initialFormData = {
@@ -26,31 +27,38 @@ const OpenTender = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios.get('https://example.com/getCategory') // Replace with your getCategory API endpoint
-      .then(response => {
-        setCategories(response.data.categories); // Assumes the API returns an array of category objects with a 'category' property
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    try {
+      axios
+        .get("https://c202-39-48-195-219.ngrok-free.app/category")
+        .then((response) => {
+          const categoriesArray = response.data.map((category) => {
+            return { title: category.title, _id: category._id };
+          });
+          setCategories(categoriesArray);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
-  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const newFormData = { ...formData, [name]: value };
+    setFormData(newFormData);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
       const response = await axios.post(
         "https://6780-39-48-222-11.ngrok-free.app/tender/add",
-        formData
+        formData,
+        config
       );
 
       console.log(response.data);
@@ -126,7 +134,7 @@ const OpenTender = () => {
             className="formDrop"
           >
             <option value="">Select an option</option>
-            <option value="stable">Stable</option>
+            <option value="stable">P-1</option>
             <option value="unstable">Unstable</option>
           </Form.Select>
         </Form.Group>
@@ -152,34 +160,18 @@ const OpenTender = () => {
             required
           />
         </Form.Group>
-        {/* <Form.Group controlId="category">
-          <Form.Label style={{paddingLeft:'10px'}}>Category</Form.Label>
-          <Form.Control
-            type="text"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group> */}
 
         <Form.Group controlId="category">
           <Form.Label style={{ paddingLeft: "10px" }}>Category</Form.Label>
-          <Form.Control
-            as="select" // Use a select element instead of a text input to display the options
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.title}>
-                {category.title}
-              </option>
-            ))}
-          </Form.Control>
+          <CheckboxDropdown
+            options={categories}
+            onChange={(selectedOptions) => {
+              const selectedIds = selectedOptions.map((option) => option._id);
+              setFormData({ ...formData, category: selectedIds });
+            }}
+          />
         </Form.Group>
+
         <Form.Group controlId="startDate">
           <Form.Label style={{ paddingLeft: "10px" }}>Start Date</Form.Label>
           <Form.Control
