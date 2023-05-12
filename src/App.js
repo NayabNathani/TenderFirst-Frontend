@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -21,11 +21,14 @@ import Profile from "./screens/Profile/Profile";
 import UpdateProfile from "./screens/Profile/updateProfile";
 import MyTenders from "./screens/MyTender/MyTender";
 import NotFound from "./components/NotFound/NotFound";
+import axios from "axios";
+
 
 function App() {
   const { loading, user, isAuthenticated } = useSelector(
     (state) => state.user
   );
+
 
   return (
     <Router>

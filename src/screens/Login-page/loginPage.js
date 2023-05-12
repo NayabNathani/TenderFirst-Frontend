@@ -45,9 +45,6 @@ const LoginPage = () => {
       navigate("/dashboard");
     } else if (registerSuccess) {
       toast.success(`Successfully registered!`);
-    } else if (registerSuccess === false) {
-      toast.error("Registration failed!");
-      dispatch({ type: "clearError" });
     }
   }, [dispatch, error, isAuthenticated, navigate, registerSuccess, user]);
 

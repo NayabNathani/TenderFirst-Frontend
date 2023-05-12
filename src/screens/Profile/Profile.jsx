@@ -51,7 +51,8 @@ const Profile = ({ user }) => {
   const AvatarModal = () => {
     return (
       <>
-        <MDBModal show={showModal} getOpenState={(e) => setShowModal(e)}>
+      {/* getOpenState={(e) => setShowModal(e)} */}
+        <MDBModal show={showModal} toggle={toggleModal}>
           <MDBModalHeader toggle={toggleModal}>Change Picture</MDBModalHeader>
           <MDBModalBody>
             <div className="mb-3">

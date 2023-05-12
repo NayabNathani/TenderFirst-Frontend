@@ -1,67 +1,66 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 
-const CheckboxDropdown = ({ options, onChange }) => {
+const CheckboxDropdown = ({ options, name, value, handleChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const handleOptionClick = (option) => {
-    const selectedIndex = selectedOptions.indexOf(option);
-    if (selectedIndex >= 0) {
-      const newSelectedOptions = [...selectedOptions];
-      newSelectedOptions.splice(selectedIndex, 1);
-      setSelectedOptions(newSelectedOptions);
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
-    }
-  };
-
-  const toggleDropdown = () => {
+  const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelectAll = () => {
-    setSelectedOptions(options);
-  };
-
-  const handleDeselectAll = () => {
-    setSelectedOptions([]);
-  };
-
-  const isChecked = (option) => {
-    return selectedOptions.indexOf(option) >= 0;
+  const handleCheckboxChange = (event) => {
+    const { value } = event.target;
+    handleChange({
+      target: {
+        name,
+        value: Array.isArray(value)
+          ? value.filter((v) => !!v)
+          : value,
+      },
+    });
   };
 
   return (
     <div className="checkbox-dropdown">
       <div
-        className="dropdown-toggle"
-        onClick={toggleDropdown}
-        onBlur={() => setIsOpen(false)}
-        style={{border:"1px solid rgba(128,128,128,0.5)"}}
+        className="dropdown-button"
+        onClick={handleDropdownToggle}
+        aria-expanded={isOpen ? "true" : "false"}
       >
-        Select Categories <span className="caret"></span>
-      </div>
-      {isOpen && (
-        <div className="dropdown-menu">
-          <Form.Group controlId="category">
-            {options.map((option) => (
-              <Form.Check
-                key={option._id}
-                id={option._id}
-                type="checkbox"
-                label={option.title}
-                checked={isChecked(option)}
-                onChange={() => handleOptionClick(option)}
-              />
+        {value.length > 0 ? (
+          <div className="selected-items">
+            {value.map((v) => (
+              <span className="selected-item" key={v}>
+                {options.find((o) => o.value === v)?.label || ""}
+              </span>
             ))}
-            <div className="dropdown-buttons">
-              <button onClick={handleSelectAll}>Select All</button>
-              <button onClick={handleDeselectAll}>Deselect All</button>
-            </div>
-          </Form.Group>
-        </div>
-      )}
+          </div>
+        ) : (
+          <span className="dropdown-placeholder">
+            Select categories...
+          </span>
+        )}
+        <span className="caret" />
+      </div>
+      <div
+        className={`dropdown-menu${isOpen ? " show" : ""}`}
+        aria-labelledby="dropdownMenuButton"
+      >
+        <Form.Group className="checkbox-list">
+          {options.map((option) => (
+            <Form.Check
+              key={option.value}
+              type="checkbox"
+              id={`${name}_${option.value}`}
+              name={name}
+              value={option.value}
+              checked={value.includes(option.value)}
+              onChange={handleCheckboxChange}
+              label={option.label}
+            />
+          ))}
+        </Form.Group>
+      </div>
     </div>
   );
 };

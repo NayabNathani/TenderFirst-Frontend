@@ -1,80 +1,42 @@
 import Footer from "../../components/Footer/footer";
 import React, { useState, useEffect } from "react";
-import { Container, Table } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Container, Table, Pagination } from "react-bootstrap";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const MyTenders = ({user}) => {
+const MyTenders = ({ user }) => {
   const [tenders, setTenders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  // const dummyData = [
-  //   { id: 1, title: "Tender 1", body: "This is the body of Tender 1" },
-  //   { id: 2, title: "Tender 2", body: "This is the body of Tender 2" },
-  //   { id: 3, title: "Tender 3", body: "This is the body of Tender 3" },
-  //   { id: 4, title: "Tender 4", body: "This is the body of Tender 4" },
-  //   { id: 5, title: "Tender 5", body: "This is the body of Tender 5" },
-  //   { id: 6, title: "Tender 6", body: "This is the body of Tender 6" },
-  //   { id: 7, title: "Tender 7", body: "This is the body of Tender 7" },
-  //   { id: 8, title: "Tender 8", body: "This is the body of Tender 8" },
-  //   { id: 9, title: "Tender 9", body: "This is the body of Tender 9" },
-  //   { id: 10, title: "Tender 10", body: "This is the body of Tender 10" },
-  //   { id: 11, title: "Tender 1", body: "This is the body of Tender 1" },
-  //   { id: 12, title: "Tender 2", body: "This is the body of Tender 2" },
-  //   { id: 13, title: "Tender 3", body: "This is the body of Tender 3" },
-  //   { id: 14, title: "Tender 4", body: "This is the body of Tender 4" },
-  //   { id: 15, title: "Tender 5", body: "This is the body of Tender 5" },
-  //   { id: 16, title: "Tender 6", body: "This is the body of Tender 6" },
-  //   { id: 17, title: "Tender 7", body: "This is the body of Tender 7" },
-  //   { id: 18, title: "Tender 8", body: "This is the body of Tender 8" },
-  //   { id: 19, title: "Tender 9", body: "This is the body of Tender 9" },
-  //   { id: 20, title: "Tender 10", body: "This is the body of Tender 10" },
-  // ];
-  // const {user} = useSelector(state=>state.user)
+  const [totalPages, setTotalPages] = useState(1);
 
-    // const fetchTenders = async () => {
-    //   setIsLoading(true);
-    //   const response = await axios.get(`https://fc1c-39-48-222-11.ngrok-free.app/tender?tenderee=${user._id}&_page=${currentPage}&_limit=10`);
-    //   setTenders((prevTenders) => [...prevTenders, ...response.data]);
-    //   setCurrentPage(currentPage + 1);
-    //   setIsLoading(false);
-    // };
+  const fetchTenders = async (page) => {
+    setIsLoading(true);
+    const limit = 10;
+    const response = await axios.get(
+      `http://localhost:8000/tender?limit=${limit}&page=${page}&tenderee=${user._id}`
+    );
+    const responseData = response.data.result.data; // Access the nested array of tenders
+    setTotalPages(response.data.result.totalPages);
 
-    const fetchTenders = async () => {
-      setIsLoading(true);
-      const response = await axios.get(`https://49f9-39-48-195-219.ngrok-free.app/tender?tenderee=${user._id}`);
-      // &_page=${currentPage}&limit=10
-      const mappedTenders = response.data.map((tenderee) => ({
+    if (Array.isArray(responseData) && responseData.length > 0) {
+      const mappedTenders = responseData.map((tenderee) => ({
         id: tenderee._id,
         title: tenderee.title,
         body: tenderee.description,
       }));
-      setTenders((prevTenders) => [...prevTenders, ...mappedTenders]);
-      setCurrentPage(currentPage + 1);
-      setIsLoading(false);
-    };
-
-  // const fetchTenders = async () => {
-  //   setIsLoading(true);
-  //   const response = dummyData.slice((currentPage - 1) * 10, currentPage * 10);
-  //   setTenders((prevTenders) => [...prevTenders, ...response]);
-  //   setCurrentPage(currentPage + 1);
-  //   setIsLoading(false);
-  // };
-
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 5 && !isLoading) {
-      fetchTenders();
+      setTenders(mappedTenders);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchTenders();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    fetchTenders(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -90,23 +52,32 @@ const MyTenders = ({user}) => {
             </tr>
           </thead>
           <tbody>
-            {
-            tenders.map((tenderee, index=0) => (
+            {tenders.map((tenderee, index) => (
               <tr key={tenderee.id}>
-                <td>{index + 1}</td>
+                <td>{(currentPage - 1) * 10 + index + 1}</td>
                 <td>{tenderee.title}</td>
                 <td>{tenderee.body}</td>
                 <td>
-                  <Link to={`/tender/${tenderee._id}`}>View Details</Link>
+                  <Link to={`/tender/${tenderee.id}`}>View Details</Link>
                 </td>
               </tr>
-            ))
-            }
+            ))}
           </tbody>
         </Table>
         {isLoading && <p>Loading...</p>}
+        <Pagination>
+          {[...Array(totalPages).keys()].map((pageNumber) => (
+            <Pagination.Item
+              key={pageNumber + 1}
+              active={pageNumber + 1 === currentPage}
+              onClick={() => handlePageChange(pageNumber + 1)}
+            >
+              {pageNumber + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
       </Container>
-      <div style={{ position: 'absolute', bottom: 0, width: '100%' }}>
+      <div>
         <Footer />
       </div>
     </>

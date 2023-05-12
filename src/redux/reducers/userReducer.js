@@ -53,6 +53,10 @@ export const userReducer = createReducer(initialState, {
     state.registerSuccess= false;
   },
   
+  updateUserEmailSuccess: (state, action) => {
+    state.user.email = action.payload;
+  },
+  
   clearError: (state) => {
     state.error = null;
   },

@@ -8,18 +8,19 @@ import Footer from "../../components/Footer/footer";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useEffect } from "react";
-import CheckboxDropdown from "./CheckboxDropdown";
+// import CheckboxDropdown from "./CheckboxDropdown";
+import Select from "react-select";
 
 const OpenTender = () => {
   const initialFormData = {
     title: "",
     description: "",
     quantity: "",
-    financialStability: "",
-    pool: "",
-    requiredExperience: "",
+    financialStability: false,
+    requiredExperience: 0,
     timeLimit: "",
-    category: "",
+    category: [],
+    location: "",
     startDate: "",
     endDate: "",
   };
@@ -28,16 +29,14 @@ const OpenTender = () => {
 
   useEffect(() => {
     try {
-      axios
-        .get("https://c202-39-48-195-219.ngrok-free.app/category")
-        .then((response) => {
-          const categoriesArray = response.data.map((category) => {
-            return { title: category.title, _id: category._id };
-          });
-          setCategories(categoriesArray);
+      axios.get("http://localhost:8000/category").then((response) => {
+        const categoriesArray = response.data.result.data.map((category) => {
+          return { value: category._id, label: category.title };
         });
+        setCategories(categoriesArray);
+      });
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   }, []);
 
@@ -47,26 +46,56 @@ const OpenTender = () => {
     setFormData(newFormData);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSelectChange = (selectedOption, { name }) => {
+    const newFormData = { ...formData, [name]: selectedOption.value };
+    setFormData(newFormData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const response = await axios.post(
-        "https://6780-39-48-222-11.ngrok-free.app/tender/add",
-        formData,
-        config
+      console.log(
+        "After",
+        formData.title,
+        formData.description,
+        formData.quantity,
+        formData.financialStability,
+        formData.requiredExperience,
+        formData.timeLimit,
+        formData.category,
+        formData.location,
+        formData.startDate,
+        formData.endDate
       );
-
-      console.log(response.data);
-      toast.success("Success");
-
-      setFormData(initialFormData);
+      const res = await axios.put(
+        "http://localhost:8000/tender/add",
+        {
+          title: formData.title,
+          description: formData.description,
+          quantity: formData.quantity,
+          financialStability: formData.financialStability,
+          requiredExperience: formData.requiredExperience,
+          timeLimit: formData.timeLimit,
+          category: formData.category,
+          location: formData.location,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.data.success) {
+        toast.success("Tender created successfully");
+        setFormData(initialFormData);
+      } else {
+        toast.error("Error creating tender");
+      }
     } catch (error) {
-      toast.error(error);
+      console.error(error.message);
+      toast.error("Error creating tender");
     }
   };
 
@@ -114,18 +143,23 @@ const OpenTender = () => {
           <Form.Label style={{ paddingLeft: "10px" }}>
             Financial Stability
           </Form.Label>
-          <Form.Select
-            value={formData.financialStability}
-            onChange={handleChange}
+          <Select
+            value={{
+              value: formData.financialStability,
+              label: formData.financialStability,
+            }}
+            onChange={(selectedOption) =>
+              handleSelectChange(selectedOption, { name: "financialStability" })
+            }
+            options={[
+              { value: "true", label: "true" },
+              { value: "false", label: "false" },
+            ]}
             required
             className="formDrop"
-          >
-            <option value="">Select an option</option>
-            <option value="stable">Stable</option>
-            <option value="unstable">Unstable</option>
-          </Form.Select>
+          />
         </Form.Group>
-        <Form.Group controlId="pool">
+        {/* <Form.Group controlId="pool">
           <Form.Label style={{ paddingLeft: "10px" }}>Pool</Form.Label>
           <Form.Select
             value={formData.pool}
@@ -137,7 +171,8 @@ const OpenTender = () => {
             <option value="stable">P-1</option>
             <option value="unstable">Unstable</option>
           </Form.Select>
-        </Form.Group>
+        </Form.Group> */}
+
         <Form.Group controlId="requiredExperience">
           <Form.Label style={{ paddingLeft: "10px" }}>
             Required Experience
@@ -163,12 +198,24 @@ const OpenTender = () => {
 
         <Form.Group controlId="category">
           <Form.Label style={{ paddingLeft: "10px" }}>Category</Form.Label>
-          <CheckboxDropdown
+          <Select
             options={categories}
-            onChange={(selectedOptions) => {
-              const selectedIds = selectedOptions.map((option) => option._id);
-              setFormData({ ...formData, category: selectedIds });
+            isMulti={true}
+            onChange={(values) => {
+              const selectedCategories = values.map((value) => value.value);
+              setFormData({ ...formData, category: selectedCategories });
             }}
+          />
+        </Form.Group>
+
+        <Form.Group controlId="location">
+          <Form.Label style={{ paddingLeft: "10px" }}>Location</Form.Label>
+          <Form.Control
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            required
           />
         </Form.Group>
 

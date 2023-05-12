@@ -54,3 +54,7 @@ export const registerUser = (firstName,lastName,email,password,contactNumber,org
     }
   };
   
+  export const updateUserEmailSuccess = (newEmail) => ({
+    type: "updateUserEmailSuccess",
+    payload: newEmail,
+  });

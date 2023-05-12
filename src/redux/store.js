@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { userReducer } from './reducers/userReducer';
@@ -14,9 +14,12 @@ export const store = configureStore({
   reducer: {
     user: persistedReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }),
 });
 
 export const persistor = persistStore(store); // Add this line to export persistor
 
 export default store;
-export const server = "https://49f9-39-48-195-219.ngrok-free.app";
+export const server = "http://localhost:8000";

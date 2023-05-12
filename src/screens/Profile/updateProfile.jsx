@@ -3,9 +3,11 @@ import { Form, Button } from "react-bootstrap";
 import { FaLock } from "react-icons/fa";
 import Footer from "../../components/Footer/footer";
 import { useSelector } from "react-redux";
+import {useDispatch} from 'react-redux'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { updateUserEmailSuccess } from "../../redux/actions/user";
 
 const UpdateProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -15,6 +17,7 @@ const UpdateProfile = () => {
   const userId = user._id;
   console.log(userId);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -25,25 +28,29 @@ const UpdateProfile = () => {
           email: email,
         },
       };
-
+  
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-
+  
       const { data } = await axios.post(
-        "https://49f9-39-48-195-219.ngrok-free.app/user/update",
-        updatedUser,config
+        "http://localhost:8000/user/update",
+        updatedUser,
+        config
       );
       console.log(data); // log the updated user data
+      dispatch(updateUserEmailSuccess(email)); // dispatch the new action
       toast.success("Updated Successfully");
       navigate("/profile");
     } catch (error) {
       console.error(error);
-      toast.error("Error Encountered!")
+      toast.error("Error Encountered!");
     }
   };
+  
+  
 
   return (
     <>
