@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -28,7 +28,6 @@ function App() {
   const { loading, user, isAuthenticated } = useSelector(
     (state) => state.user
   );
-
 
   return (
     <Router>

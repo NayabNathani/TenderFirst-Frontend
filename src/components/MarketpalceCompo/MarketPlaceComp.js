@@ -2,182 +2,80 @@ import React, { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-import InfiniteScroll from 'react-infinite-scroll-component';
-
-const dummyUsers = [
-  {
-    _id: 1,
-    name: 'John Doe',
-    catType: ['Category Z', 'Category B'],
-    pool: 100,
-    price: 50,
-    startDate: '2022-01-01',
-    endDate: '2022-01-31',
-    isAvailable: 'active'
-  },
-  {
-    _id: 2,
-    name: 'Jane Smith',
-    catType: ['Category C', 'Category D'],
-    pool: 200,
-    price: 75,
-    startDate: '2022-02-01',
-    endDate: '2022-02-28',
-    isAvailable: 'inactive'
-  },
-  {
-    _id: 3,
-    name: 'Bob Johnson',
-    catType: ['Category E'],
-    pool: 50,
-    price: 25,
-    startDate: '2022-03-01',
-    endDate: '2022-03-31',
-    isAvailable: 'active'
-  },
-  {
-    _id: 4,
-    name: 'Alice Lee',
-    catType: ['Category F', 'Category G'],
-    pool: 150,
-    price: 100,
-    startDate: '2022-04-01',
-    endDate: '2022-04-30',
-    isAvailable: 'inactive'
-  },
-  {
-    _id: 5,
-    name: 'Tom Brown',
-    catType: ['Category H', 'Category I', 'Category J'],
-    pool: 300,
-    price: 150,
-    startDate: '2022-05-01',
-    endDate: '2022-05-31',
-    isAvailable: 'active'
-  },
-  {
-    _id: 6,
-    name: 'John Doe',
-    catType: ['Category A', 'Category B'],
-    pool: 100,
-    price: 50,
-    startDate: '2022-01-01',
-    endDate: '2022-01-31',
-    isAvailable: 'active'
-  },
-  {
-    _id: 7,
-    name: 'Jane Smith',
-    catType: ['Category C', 'Category D'],
-    pool: 200,
-    price: 75,
-    startDate: '2022-02-01',
-    endDate: '2022-02-28',
-    isAvailable: 'inactive'
-  },
-  {
-    _id: 8,
-    name: 'Bob Johnson',
-    catType: ['Category E'],
-    pool: 50,
-    price: 25,
-    startDate: '2022-03-01',
-    endDate: '2022-03-31',
-    isAvailable: 'active'
-  },
-  {
-    _id: 9,
-    name: 'Alice Lee',
-    catType: ['s F', 'Category G'],
-    pool: 150,
-    price: 100,
-    startDate: '2022-04-01',
-    endDate: '2022-04-30',
-    isAvailable: 'inactive'
-  },
-  {
-    _id: 10,
-    name: 'Tom Brown',
-    catType: ['d Z', 'Category I', 'Category J'],
-    pool: 300,
-    price: 150,
-    startDate: '2022-05-01',
-    endDate: '2022-05-31',
-    isAvailable: 'active'
-  },
-];
-
+import Pagination from 'react-bootstrap/Pagination';
 
 const MarketPlaceComp = () => {
-  const [users, setUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [tenders, setTenders] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState(dummyUsers);
-  
+  const [filteredTenders, setFilteredTenders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // useEffect(() => {
-  //   axios.get(`https://example.com/api/users?page=${currentPage}&limit=10`)
-  //     .then(res => {
-  //       setUsers([...users, ...res.data]);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     })
+  const fetchTenders = async (page) => {
+    setIsLoading(true);
+    const limit = 10;
+    const response = await axios.get(
+      `http://localhost:8000/tender?limit=${limit}&page=${page}`
+    );
+    const responseData = response.data.result.data;
+    setTotalPages(response.data.result.totalPages);
 
-  // }, [currentPage]);
+    if (Array.isArray(responseData) && responseData.length > 0) {
+      const mappedTenders = responseData.map((tender) => ({
+        _id: tender._id, // Changed 'id' to '_id' to match the response data
+        user: tender.tenderee.firstName,
+        category: tender.category[0].title, // Access the title property from category array
+        price: tender.price, // Assuming 'price' is present in the response
+        createdAt: tender.createdAt,
+        startDate: tender.startDate,
+        endDate: new Date(new Date(tender.startDate).getTime() + (tender.timeLimit * 60 * 1000)),
+        isActive: new Date() <= new Date(new Date(tender.startDate).getTime() + (tender.timeLimit * 60 * 1000)),
+      }));
+      setTenders(mappedTenders);
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    setUsers([...users, ...dummyUsers]);
-
+    fetchTenders(currentPage);
   }, [currentPage]);
 
-  // const filteredUsers = searchText ? users.filter(user =>
-  //   user.catType.some(cat => cat.toLowerCase().includes(searchText.toLowerCase()))
-  // ) : users;
-   
   useEffect(() => {
-    const newFilteredUsers = searchText ? users.filter(user =>
-      user.catType.some(cat => cat.toLowerCase().includes(searchText.toLowerCase()))
-    ) : users;
-    setFilteredUsers(newFilteredUsers);
-  }, [searchText, users]);
-  
+    const newFilteredTenders = searchText ? tenders.filter(tender =>
+      tender.category.toLowerCase().includes(searchText.toLowerCase())
+    ) : tenders;
+    setFilteredTenders(newFilteredTenders);
+  }, [searchText, tenders]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
-      {
-      users.length === 0 ?
-        <div>No users found.</div>
-        :
+      {!isLoading && filteredTenders.length === 0 && <div>No tenders found.</div>}
+      {!isLoading && filteredTenders.length > 0 && (
         <>
-   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width:'100%', paddingTop: '5px', paddingBottom:'2rem' }}>
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width:'50%'}}>
-    <input 
-      type="text" 
-      placeholder="Search by category" 
-      value={searchText} 
-      autoFocus 
-      onChange={(e) => setSearchText(e.target.value)} 
-      className="form-control me-2" 
-      style={{ width: '100%' }} 
-    />
-  </div>
-</div>
-
-        <InfiniteScroll
-          dataLength={filteredUsers.length}
-          next={() => setCurrentPage(currentPage + 1)}
-          hasMore={true}
-          loader={<h4>Loading...</h4>}
-        >
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: '5px', paddingBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '50%' }}>
+              <input
+                type="text"
+                placeholder="Search by category"
+                value={searchText}
+                autoFocus
+                onChange={(e) => setSearchText(e.target.value)}
+                className="form-control me-2"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
           <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">User</th>
                 <th scope="col">Category</th>
-                <th scope="col">Pool</th>
                 <th scope="col">Price</th>
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
@@ -186,46 +84,53 @@ const MarketPlaceComp = () => {
               </tr>
             </thead>
             <tbody>
-              {
-                filteredUsers.map(item => (
-                  <Row
-                    key={item._id}
-                    item={item}
-                  />
-                ))
-              }
+              {filteredTenders.map((tender, index) => (
+                <tr key={tender._id}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{tender.user}</td>
+                  <td>{tender.category}</td>
+                  <td>{tender.price}</td>
+                  <td>{new Date(tender.startDate).toLocaleString()}</td>
+                  <td>
+                    {new Date(tender.endDate) > new Date() ? (
+                      new Date(tender.endDate).toLocaleString()
+                    ) : (
+                      <span className="text-danger">{new Date(tender.endDate).toLocaleString()}</span>
+                    )}
+                  </td>
+                  <td>
+                    <Link to={`/tender/${tender._id}`} className="btn btn-primary">
+                      View Details
+                    </Link>
+                  </td>
+                  <td>
+                    {tender.isActive ? (
+                      <Button variant="secondary" disabled>
+                        Active
+                      </Button>
+                    ) : (
+                      <Button variant="danger" disabled>
+                        Ended
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
-            </table>
-            </InfiniteScroll></>
-}
+          </table>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: '2rem' }}>
+            <Pagination>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+            </Pagination>
+          </div>
+        </>
+      )}
     </>
   );
-};
+}
 
 export default MarketPlaceComp;
-
-function Row({item}) {
-  const buttonClass = item.isAvailable === 'active' ? 'btn btn-success' : 'btn btn-danger';
-  const linkTo = `/details/${item._id}`; // set the link to the detail page
-
-
-  return (
-    <tr>
-      <td>{item._id}</td>
-      <td>{item.name}</td>
-      <td>{item.catType.map(item => item + " ")}</td>
-      <td>${item.pool}</td>
-      <td>${item.price}</td>
-      <td>{item.startDate}</td>
-      <td>{item.endDate}</td>
-      <td>
-        <Button className={buttonClass}>
-          {item.isAvailable === 'active' ? 'Active' : 'Not Active'}
-        </Button>
-      </td>
-      <td>
-        <Link to={linkTo}>View Details</Link>
-      </td>
-    </tr>
-  )
-}

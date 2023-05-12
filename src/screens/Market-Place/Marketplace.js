@@ -13,7 +13,7 @@ const Marketplace= ()=> {
       <Breadcrumb/>
       <br/>
       <MarketPlaceComp/>
-      <Footer />
+      <div><Footer /></div>
     </>
   );
 }
