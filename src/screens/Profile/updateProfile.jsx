@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { updateUserEmailSuccess } from "../../redux/actions/user";
+import API_URL from "../../config";
 
 const UpdateProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -33,10 +34,11 @@ const UpdateProfile = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       };
   
       const { data } = await axios.post(
-        "http://localhost:8000/user/update",
+        API_URL + "/user/update",
         updatedUser,
         config
       );

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Pagination } from "react-bootstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API_URL from "../../config"
 
 const MyTenders = ({ user }) => {
   const [tenders, setTenders] = useState([]);
@@ -14,8 +15,8 @@ const MyTenders = ({ user }) => {
     setIsLoading(true);
     const limit = 10;
     const response = await axios.get(
-      `http://localhost:8000/tender?limit=${limit}&page=${page}&tenderee=${user._id}`
-    );
+      API_URL + `/tender?limit=${limit}&page=${page}&tenderee=${user._id}`,
+    {withCredentials:true});
     const responseData = response.data.result.data; // Access the nested array of tenders
     setTotalPages(response.data.result.totalPages);
 
@@ -25,6 +26,7 @@ const MyTenders = ({ user }) => {
         title: tenderee.title,
         body: tenderee.description,
       }));
+      // console.log(mappedTenders)
       setTenders(mappedTenders);
     }
     setIsLoading(false);
@@ -58,7 +60,7 @@ const MyTenders = ({ user }) => {
                 <td>{tenderee.title}</td>
                 <td>{tenderee.body}</td>
                 <td>
-                  <Link to={`/tender/${tenderee.id}`}>View Details</Link>
+                  <Link to={`/mytender/${tenderee.id}`}>View Details</Link>
                 </td>
               </tr>
             ))}
@@ -77,9 +79,9 @@ const MyTenders = ({ user }) => {
           ))}
         </Pagination>
       </Container>
-      <div>
-        <Footer />
-      </div>
+      <div style={{ marginBottom: "5rem" }}></div>
+      <Footer />
+      
     </>
   );
 };

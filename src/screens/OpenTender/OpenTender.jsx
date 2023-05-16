@@ -10,31 +10,54 @@ import axios from "axios";
 import { useEffect } from "react";
 // import CheckboxDropdown from "./CheckboxDropdown";
 import Select from "react-select";
+import { useSelector } from "react-redux";
+import API_URL from "../../config"
 
 const OpenTender = () => {
   const initialFormData = {
     title: "",
     description: "",
-    quantity: "",
-    financialStability: false,
+    quantity: "0",
+    pool: [],
     requiredExperience: 0,
     timeLimit: "",
     category: [],
     location: "",
-    startDate: "",
+    startDate: new Date().toISOString().substr(0, 10),
     endDate: "",
   };
   const [formData, setFormData] = useState(initialFormData);
   const [categories, setCategories] = useState([]);
+  const [pool, setPool] = useState([]);
 
   useEffect(() => {
     try {
-      axios.get("http://localhost:8000/category").then((response) => {
-        const categoriesArray = response.data.result.data.map((category) => {
-          return { value: category._id, label: category.title };
+      axios
+        .get(API_URL + "/category")
+        .then((response) => {
+          const categoriesArray = response.data.result.data.map((category) => {
+            return { value: category._id, label: category.title };
+          });
+          setCategories(categoriesArray);
         });
-        setCategories(categoriesArray);
-      });
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      axios
+        .get(API_URL + "/pool")
+        .then((response) => {
+          const poolArray = response.data.result.data.map((pool) => {
+            return { value: pool._id, 
+              label: `${pool.title}  (${pool.minimumCost} - ${pool.maximumCost})`
+            };
+          });
+          setPool(poolArray);
+          // console.log("Here ", poolArray)
+        });
     } catch (error) {
       console.error(error.message);
     }
@@ -45,39 +68,28 @@ const OpenTender = () => {
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
   };
+  // const handleSelectChange = (selectedOption, { name }) => {
+  //   const value = selectedOption ? selectedOption.value : [];
+  //   const newFormData = { ...formData, [name]: value };
+  //   setFormData(newFormData);
+  // };
 
-  const handleSelectChange = (selectedOption, { name }) => {
-    const newFormData = { ...formData, [name]: selectedOption.value };
-    setFormData(newFormData);
-  };
+  const { user } = useSelector((state) => state.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(
-        "After",
-        formData.title,
-        formData.description,
-        formData.quantity,
-        formData.financialStability,
-        formData.requiredExperience,
-        formData.timeLimit,
-        formData.category,
-        formData.location,
-        formData.startDate,
-        formData.endDate
-      );
-      const res = await axios.put(
-        "http://localhost:8000/tender/add",
+      const res = await axios.post(
+       API_URL + "/tender/add",
         {
           title: formData.title,
           description: formData.description,
           quantity: formData.quantity,
-          financialStability: formData.financialStability,
-          requiredExperience: formData.requiredExperience,
+          userId: user._id,
+          pool: formData.pool,
+          location: formData.location,
           timeLimit: formData.timeLimit,
           category: formData.category,
-          location: formData.location,
           startDate: formData.startDate,
           endDate: formData.endDate,
         },
@@ -85,17 +97,21 @@ const OpenTender = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       if (res.data.success) {
         toast.success("Tender created successfully");
         setFormData(initialFormData);
+        console.log(formData)
       } else {
         toast.error("Error creating tender");
+        console.log(formData)
       }
     } catch (error) {
       console.error(error.message);
       toast.error("Error creating tender");
+      console.log(formData)
     }
   };
 
@@ -139,54 +155,23 @@ const OpenTender = () => {
             onChange={handleChange}
           />
         </Form.Group>
-        <Form.Group controlId="financialStability">
-          <Form.Label style={{ paddingLeft: "10px" }}>
-            Financial Stability
-          </Form.Label>
-          <Select
-            value={{
-              value: formData.financialStability,
-              label: formData.financialStability,
-            }}
-            onChange={(selectedOption) =>
-              handleSelectChange(selectedOption, { name: "financialStability" })
-            }
-            options={[
-              { value: "true", label: "true" },
-              { value: "false", label: "false" },
-            ]}
-            required
-            className="formDrop"
-          />
-        </Form.Group>
-        {/* <Form.Group controlId="pool">
+        <Form.Group controlId="pool">
           <Form.Label style={{ paddingLeft: "10px" }}>Pool</Form.Label>
-          <Form.Select
-            value={formData.pool}
-            onChange={handleChange}
-            required
-            className="formDrop"
-          >
-            <option value="">Select an option</option>
-            <option value="stable">P-1</option>
-            <option value="unstable">Unstable</option>
-          </Form.Select>
-        </Form.Group> */}
-
-        <Form.Group controlId="requiredExperience">
-          <Form.Label style={{ paddingLeft: "10px" }}>
-            Required Experience
-          </Form.Label>
-          <Form.Control
-            type="number"
-            name="requiredExperience"
-            value={formData.requiredExperience}
-            onChange={handleChange}
-            required
+          <Select
+            options={pool}
+            isMulti={false}
+            onChange={(selectedOption) => {
+              setFormData({
+                ...formData,
+                pool: selectedOption ? selectedOption.value : [],
+              });
+            }}
+            value={pool.find((p) => p.value === formData.pool)}
           />
         </Form.Group>
+
         <Form.Group controlId="timeLimit">
-          <Form.Label style={{ paddingLeft: "10px" }}>Time Limit</Form.Label>
+          <Form.Label style={{ paddingLeft: "10px" }}>Time Limit (Number of Days)</Form.Label>
           <Form.Control
             type="number"
             name="timeLimit"

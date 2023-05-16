@@ -9,7 +9,8 @@ export const login = (email, password) => async(dispatch)=>{
         {
             headers:{
                 "Content-type":"application/json"
-            }
+            },
+            withCredentials:true,
         }
         );
         dispatch({type:"loginSuccess", payload: data});
@@ -40,7 +41,8 @@ export const registerUser = (firstName,lastName,email,password,contactNumber,org
       {
         headers:{
             "Content-type":"application/json"
-        }
+        },
+        withCredentials:true,
       }
       );
   

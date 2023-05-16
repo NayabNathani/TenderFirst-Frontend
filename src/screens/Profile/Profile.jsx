@@ -8,10 +8,6 @@ import {
   MDBCardBody,
   MDBCardImage,
   MDBBtn,
-  MDBModal,
-  MDBModalHeader,
-  MDBModalBody,
-  MDBModalFooter,
 } from "mdb-react-ui-kit";
 import Breadcrumb from "../../components/BreadCrumb/breadcrumb";
 import Footer from "../../components/Footer/footer";
@@ -19,73 +15,72 @@ import { Link } from "react-router-dom";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 
 const Profile = ({ user }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [newAvatar, setNewAvatar] = useState(null);
+  // const [showModal, setShowModal] = useState(false);
+  // const [newAvatar, setNewAvatar] = useState(null);
   const [User, setUser] = useState({ user });
-  const avatarUrl = "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png";
+  const avatarUrl =
+    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png";
 
   useEffect(() => {
     setUser(user);
   }, [user]);
 
-  const handleFileInput = (event) => {
-    const file = event.target.files[0];
-    setNewAvatar(file);
-  };
+  // const handleFileInput = (event) => {
+  //   const file = event.target.files[0];
+  //   setNewAvatar(file);
+  // };
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
+  // const toggleModal = () => {
+  //   setShowModal(!showModal);
+  // };
 
-  const handleConfirmChange = () => {
-    const newAvatarUrl = URL.createObjectURL(newAvatar);
-    console.log(newAvatarUrl);
-    setUser((prevState) => ({
-      ...prevState,
-      avatar: { url: newAvatarUrl },
-    }));
-    setNewAvatar(null);
-    setShowModal(false);
-  };
+  // const handleConfirmChange = () => {
+  //   const newAvatarUrl = URL.createObjectURL(newAvatar);
+  //   console.log(newAvatarUrl);
+  //   setUser((prevState) => ({
+  //     ...prevState,
+  //     avatar: { url: newAvatarUrl },
+  //   }));
+  //   setNewAvatar(null);
+  //   setShowModal(false);
+  // };
 
-  const AvatarModal = () => {
-    return (
-      <>
-      {/* getOpenState={(e) => setShowModal(e)} */}
-        <MDBModal show={showModal} toggle={toggleModal}>
-          <MDBModalHeader toggle={toggleModal}>Change Picture</MDBModalHeader>
-          <MDBModalBody>
-            <div className="mb-3">
-              <label htmlFor="avatarInput" className="form-label">
-                Choose a new profile picture:
-              </label>
-              <input
-                type="file"
-                className="form-control"
-                id="avatarInput"
-                onChange={handleFileInput}
-              />
-            </div>
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color="dark" onClick={toggleModal}>
-              Cancel
-            </MDBBtn>
-            <MDBBtn
-              outline
-              className="ms-1"
-              color="warning"
-              onClick={handleConfirmChange}
-            >
-              Save changes
-            </MDBBtn>
-          </MDBModalFooter>
-        </MDBModal>
-      </>
-    );
-  };
-
-
+  // const AvatarModal = () => {
+  //   return (
+  //     <>
+  //     {/* getOpenState={(e) => setShowModal(e)} */}
+  //       <MDBModal show={showModal} toggle={toggleModal}>
+  //         <MDBModalHeader toggle={toggleModal}>Change Picture</MDBModalHeader>
+  //         <MDBModalBody>
+  //           <div className="mb-3">
+  //             <label htmlFor="avatarInput" className="form-label">
+  //               Choose a new profile picture:
+  //             </label>
+  //             <input
+  //               type="file"
+  //               className="form-control"
+  //               id="avatarInput"
+  //               onChange={handleFileInput}
+  //             />
+  //           </div>
+  //         </MDBModalBody>
+  //         <MDBModalFooter>
+  //           <MDBBtn color="dark" onClick={toggleModal}>
+  //             Cancel
+  //           </MDBBtn>
+  //           <MDBBtn
+  //             outline
+  //             className="ms-1"
+  //             color="warning"
+  //             onClick={handleConfirmChange}
+  //           >
+  //             Save changes
+  //           </MDBBtn>
+  //         </MDBModalFooter>
+  //       </MDBModal>
+  //     </>
+  //   );
+  // };
 
   return (
     <>
@@ -97,16 +92,19 @@ const Profile = ({ user }) => {
               <MDBCard className="mb-4">
                 <MDBCardBody className="text-center">
                   <MDBCardImage
-                  src={
-                    newAvatar
-                      ? URL.createObjectURL(newAvatar)
-                      : "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png"
-                  }
-                  alt={avatarUrl}
-                  className="rounded-circle"
-                  style={{ width: "150px" }}
-                  fluid
-                />
+                    src={
+                      "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png"
+                    }
+                    // src={
+                    //   newAvatar
+                    //     ? URL.createObjectURL(newAvatar)
+                    //     : "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Images.png"
+                    // }
+                    alt={avatarUrl}
+                    className="rounded-circle"
+                    style={{ width: "150px" }}
+                    fluid
+                  />
                   <p className="text-muted mb-4">{user.address}</p>
                   <div className="d-flex justify-content-center mb-2">
                     <Link to="/updateprofile">
@@ -118,15 +116,6 @@ const Profile = ({ user }) => {
                         Edit profile
                       </MDBBtn>
                     </Link>
-                    <MDBBtn
-                      outline
-                      className="ms-1"
-                      color="warning"
-                      onClick={toggleModal}
-                    >
-                      {" "}
-                      Change Picture
-                    </MDBBtn>
                   </div>
                 </MDBCardBody>
               </MDBCard>
@@ -159,18 +148,7 @@ const Profile = ({ user }) => {
                   <hr />
                   <MDBRow>
                     <MDBCol sm="3">
-                      <MDBCardText>Phone</MDBCardText>
-                    </MDBCol>
-                    <MDBCol sm="9">
-                      <MDBCardText className="text-muted">
-                        {user.contactNumber}
-                      </MDBCardText>
-                    </MDBCol>
-                  </MDBRow>
-                  <hr />
-                  <MDBRow>
-                    <MDBCol sm="3">
-                      <MDBCardText>Mobile</MDBCardText>
+                      <MDBCardText>Contact Number</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted">
@@ -189,13 +167,46 @@ const Profile = ({ user }) => {
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol sm="3">
+                      <MDBCardText>Pool</MDBCardText>
+                    </MDBCol>
+                    <MDBCol sm="9">
+                      <MDBCardText className="text-muted">
+                        {user.pool ? (
+                          <>
+                            {user.pool.title} ({user.pool.minimumCost}-
+                            {user.pool.maximumCost})
+                          </>
+                        ) : (
+                          "None"
+                        )}
+                      </MDBCardText>
+                    </MDBCol>
+                  </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol sm="3">
+                      <MDBCardText>Categories</MDBCardText>
+                    </MDBCol>
+                    <MDBCol sm="9">
+                      <MDBCardText className="text-muted">
+                        {user.categories > "0"
+                          ? user.categories.map((category) => (
+                              <span key={category._id}>{category.title}, </span>
+                            ))
+                          : ("None")}
+                      </MDBCardText>
+                    </MDBCol>
+                  </MDBRow>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
           </MDBRow>
         </MDBContainer>
       </section>
-      <AvatarModal />
+      {/* <AvatarModal /> */}
       <Footer />
     </>
   );

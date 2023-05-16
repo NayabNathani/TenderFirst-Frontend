@@ -22,6 +22,8 @@ import UpdateProfile from "./screens/Profile/updateProfile";
 import MyTenders from "./screens/MyTender/MyTender";
 import NotFound from "./components/NotFound/NotFound";
 import axios from "axios";
+import MyTenderDetails from "./screens/MyTenderDetail/MyTenderDetails";
+import MarketPlaceDetails from "./screens/MarketPlaceDetailPage/marketplaceDetails";
 
 
 function App() {
@@ -46,9 +48,12 @@ function App() {
                   <Route path="/profile" element={<Profile user={user} />} />
                   <Route path="/updateprofile" element={<UpdateProfile />} />
                   <Route path="/mytender" element={<MyTenders user={user} />} />
+                  <Route path="/mytender/:id" element={<MyTenderDetails />} />
                   <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/marketplace/:id" element={<MarketPlaceDetails />} />
                   <Route path="/opentender" element={<OpenTender />} />
-                  <Route path="/detailpage" element={<DetailPage />} />
+                  {/* <Route path="/detailpage" element={<DetailPage />} /> */}
+                  
                 </>
               ) : (
                 <Route path="/login" element={<Navigate to="/login" />} />

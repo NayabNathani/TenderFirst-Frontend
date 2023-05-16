@@ -116,7 +116,7 @@ const Header = ({ isAuthenticated }) => {
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mx-auto">
-                  <Nav.Link className="me-5 ms-5" href="/marketplace" cpas>
+                  <Nav.Link className="me-5 ms-5" href="/marketplace">
                     Market Place
                   </Nav.Link>
                   <Nav.Link className="ms-5 me-5" eventKey={2} href="/opentender">
@@ -144,7 +144,7 @@ const Header = ({ isAuthenticated }) => {
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mx-auto">
-                  <Nav.Link className="me-5 ms-5" href="/" cpas>
+                  <Nav.Link className="me-5 ms-5" href="/">
                     Home
                   </Nav.Link>
                   <Nav.Link className="ms-5 me-5" eventKey={2} href="/#about">

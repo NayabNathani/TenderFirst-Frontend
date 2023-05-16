@@ -6,6 +6,9 @@ import { login, registerUser } from "../../redux/actions/user";
 import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import axios from "axios";
+import API_URL from "../../config";
 
 const LoginPage = () => {
 
@@ -16,8 +19,14 @@ const LoginPage = () => {
   const [lastName, setLname] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [organizationName, setOrganizationName] = useState("");
-  const [pool, setPool] = useState("");
-  const [category, setCategory] = useState([]);
+  const initialFormData = {
+    pool: [],
+    categories: [],
+
+  };
+  const [formData, setFormData] = useState(initialFormData);
+  const [categories, setCategories] = useState([]);
+  const [pool, setPool] = useState([]);
 
   const { user, error, isAuthenticated, registerSuccess } = useSelector(
     (state) => state.user
@@ -29,19 +38,55 @@ const LoginPage = () => {
   function handleLoginSubmit(event) {
     event.preventDefault();
     dispatch(login(email, password))
-  }
+  };
 
   function handleSignUpSubmit(event) {
     event.preventDefault();
-    dispatch(registerUser(firstName, lastName, email, password, contactNumber, organizationName, pool, category));
+    const poolIds = formData.pool.map((option) => option.value);
+    dispatch(registerUser(firstName, lastName, email, password, contactNumber, organizationName, poolIds, formData.categories));
   };
+
+
+  useEffect(() => {
+    try {
+      axios
+        .get(API_URL + "/category", { withCredentials: true })
+        .then((response) => {
+          const categoriesArray = response.data.result.data.map((category) => {
+            return { value: category._id, label: category.title };
+          });
+          setCategories(categoriesArray);
+        });
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      axios
+        .get(API_URL + "/pool", { withCredentials: true })
+        .then((response) => {
+          const poolArray = response.data.result.data.map((pool) => {
+            return {
+              value: pool._id,
+              label: `${pool.title}  (${pool.minimumCost} - ${pool.maximumCost})`
+            };
+          });
+          setPool(poolArray);
+        });
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, []);
+
 
   useEffect(() => {
     if (error) {
       toast.error("Incorrect Email/Password!");
       dispatch({ type: "clearError" });
     } else if (isAuthenticated) {
-      toast.success(`Welcome Back ${user.firstName}`);
+      toast.success(`Welcome Back ${user.firstName} ${user.lastName}`);
       navigate("/dashboard");
     } else if (registerSuccess) {
       toast.success(`Successfully registered!`);
@@ -50,7 +95,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <Components.Container style={{ maxWidth: "100%", height: "650px" }}>
+      <Components.Container style={{ maxWidth: "100%", height: "700px" }}>
         <Components.SignUpContainer signingIn={signIn} >
           <Components.Form onSubmit={handleSignUpSubmit}>
             <Components.Title>Create Account</Components.Title>
@@ -60,8 +105,31 @@ const LoginPage = () => {
             <Components.Input type="password" value={password} placeholder="Password" onChange={(e) => { setPassword(e.target.value) }} />
             <Components.Input type="text" value={contactNumber} placeholder="Contact Number" onChange={(e) => { setContactNumber(e.target.value) }} />
             <Components.Input type="text" value={organizationName} placeholder="Organization Name" onChange={(e) => { setOrganizationName(e.target.value) }} />
-            <Components.Input type="text" value={pool} placeholder="Pool" onChange={(e) => { setPool(e.target.value) }} />
-            <Components.Input type="text" value={category} placeholder="Category" onChange={(e) => { setCategory(e.target.value) }} />
+            <div style={{ marginBottom: "10px", marginLeft: "0" }}>
+              <Select
+                options={pool}
+                isMulti={false}
+                onChange={(value) => {
+                  setFormData({ ...formData, pool: value ? [value] : [] });
+                }}
+                placeholder="Select Pool"
+              />
+            </div>
+
+            <div style={{ marginBottom: "10px", marginLeft: "0" }}>
+              <Select
+                options={categories}
+                isMulti={true}
+                onChange={(values) => {
+                  const selectedCategories = values.map((value) => value.value);
+                  setFormData({ ...formData, categories: selectedCategories });
+                }}
+                placeholder="Select Categories"
+              />
+            </div>
+
+
+
             <Components.Button>Sign Up</Components.Button>
           </Components.Form>
         </Components.SignUpContainer>

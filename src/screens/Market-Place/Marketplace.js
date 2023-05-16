@@ -1,7 +1,4 @@
 import React from "react";
-//import axios from 'axios';
-// import { useNavigate, Link } from "react-router-dom";
-// import LoginHeader from '../../components/Login-Header/Loginnavbar';
 import Footer from '../../components/Footer/footer'; 
 import MarketPlaceComp from "../../components/MarketpalceCompo/MarketPlaceComp";
 import Breadcrumb from "../../components/BreadCrumb/breadcrumb";
@@ -13,7 +10,10 @@ const Marketplace= ()=> {
       <Breadcrumb/>
       <br/>
       <MarketPlaceComp/>
-      <div><Footer /></div>
+      
+      <div style={{ marginBottom: "10rem" }}></div>
+      <div style={{bottom: 0, width: "100%" }}><Footer /></div>
+      {/* <Footer /> */}
     </>
   );
 }
