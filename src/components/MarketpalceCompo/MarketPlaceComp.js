@@ -39,21 +39,21 @@ const MarketPlaceComp = () => {
           page: currentPage,
           pool: userPool,
           category: category,
-          status: "approved",
           title: title,
         },
         withCredentials: true
       }
       );
       const responseData = response.data.result.data;
+      // console.log("I am Here ",responseData);
       setTotalPages(response.data.result.totalPages);
 
       if (Array.isArray(responseData) && responseData.length > 0) {
         const mappedTenders = responseData.map((tender) => ({
           _id: tender._id,
-          user: tender.title,
+          title: tender.title,
           category: tender.category.map((cat) => cat.title),
-          price: tender.price,
+          // price: tender.price,
           createdAt: tender.createdAt,
           startDate: tender.startDate,
           endDate: tender.endDate,
@@ -62,6 +62,8 @@ const MarketPlaceComp = () => {
         }));
 
         setTenders(mappedTenders);
+        console.log("Here 2",mappedTenders)
+
       }
       setIsLoading(false);
     };
@@ -72,7 +74,7 @@ const MarketPlaceComp = () => {
 
   useEffect(() => {
     const newFilteredTenders = searchText ? tenders.filter(tender =>
-      tender.user.toLowerCase().includes(searchText.toLowerCase())
+      tender.title.toLowerCase().includes(searchText.toLowerCase())
     ) : tenders;
     setFilteredTenders(newFilteredTenders);
   }, [searchText, tenders]);
@@ -82,11 +84,6 @@ const MarketPlaceComp = () => {
     setCurrentPage(pageNumber);
   };
 
-  // const handleCheckboxChange = (e) => {
-  //   const isChecked = e.target.checked;
-  //   setCategory(isChecked ? (user.categories._id ? user.categories._id.join(",") : "") : "");
-  //   console.log(category)
-  // };
 
   return (
     <>
@@ -134,7 +131,7 @@ const MarketPlaceComp = () => {
               {filteredTenders.map((tender, index) => (
                 <tr key={tender._id}>
                   <th scope="row">{(currentPage - 1) * 10 + index + 1}</th>
-                  <td>{tender.user}</td>
+                  <td>{tender.title}</td>
                   <td style={{listStyleType:"none"}}>{tender.category.map((title, index) => (<li key={index}>{title}</li>))}</td>
                   <td>{tender.poolTitle}</td>
                   <td>{new Date(tender.startDate).toLocaleString()}</td>

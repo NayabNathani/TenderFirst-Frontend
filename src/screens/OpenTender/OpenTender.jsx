@@ -56,12 +56,14 @@ const OpenTender = () => {
             };
           });
           setPool(poolArray);
-          // console.log("Here ", poolArray)
+          console.log("Here ", poolArray)
         });
     } catch (error) {
       console.error(error.message);
     }
   }, []);
+
+  // console.log("now here", pool)
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -86,7 +88,7 @@ const OpenTender = () => {
           description: formData.description,
           quantity: formData.quantity,
           userId: user._id,
-          pool: formData.pool,
+          poolId: formData.pool,
           location: formData.location,
           timeLimit: formData.timeLimit,
           category: formData.category,
@@ -111,7 +113,7 @@ const OpenTender = () => {
     } catch (error) {
       console.error(error.message);
       toast.error("Error creating tender");
-      console.log(formData)
+      // console.log(formData)
     }
   };
 

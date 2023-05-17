@@ -11,7 +11,7 @@ const Marketplace= ()=> {
       <br/>
       <MarketPlaceComp/>
       
-      <div style={{ marginBottom: "10rem" }}></div>
+      <div style={{ marginBottom: "15rem" }}></div>
       <div style={{bottom: 0, width: "100%" }}><Footer /></div>
       {/* <Footer /> */}
     </>

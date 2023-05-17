@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import { FaAngleDown } from "react-icons/fa";
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
-import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt, FaCogs } from "react-icons/fa";
 import { IoMdPerson } from "react-icons/io";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -69,6 +69,12 @@ const DropdownMenu = ({user}) => {
             <Flex alignItems="center" px={2} py={1} cursor="pointer">
               <IoMdPerson size={20} />
               <Text ml={2}>Mytender</Text>
+            </Flex>
+          </Link>
+          <Link to="/">
+            <Flex alignItems="center" px={2} py={1} cursor="pointer">
+              <FaCogs size={20} />
+              <Text ml={2}>On Going Projects</Text>
             </Flex>
           </Link>
           <Link to="/profile">

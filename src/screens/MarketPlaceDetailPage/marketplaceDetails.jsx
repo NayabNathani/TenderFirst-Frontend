@@ -52,7 +52,7 @@ const MarketPlaceDetails = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-       API_URL + "/tender/add-bid",
+        API_URL + "/tender/add-bid",
         {
           tenderId: id,
           estimatedCost,
@@ -72,10 +72,9 @@ const MarketPlaceDetails = () => {
 
   useEffect(() => {
     axios
-      .get(
-        API_URL + `/tender/specific-bid?tenderId=${id}&key=${user._id}`,
-        { withCredentials: true }
-      )
+      .get(API_URL + `/tender/specific-bid?tenderId=${id}&key=${user._id}`, {
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.data.result.length > 0) {
           console.log("Bid exists");
@@ -106,7 +105,7 @@ const MarketPlaceDetails = () => {
                 <hr />
                 <ListGroupItem>
                   Category:
-                  <ul style={{listStyleType:"none"}}>
+                  <ul style={{ listStyleType: "none" }}>
                     {Tender.category.map((category) => (
                       <li key={category._id}>{category.title}</li>
                     ))}
@@ -132,7 +131,8 @@ const MarketPlaceDetails = () => {
           <Card>
             <Card.Body>
               <Card.Title className="text-center">Place Your Bid</Card.Title>
-              {isBidAvailable === false ? (
+              {
+              isBidAvailable === false ? (
                 <div
                   style={{
                     display: "flex",
@@ -143,7 +143,8 @@ const MarketPlaceDetails = () => {
                   <GreenTickIcon />
                   <h2> You Have Already Submitted Bid</h2>
                 </div>
-              ) : bidSubmitted ? (
+              ) : 
+              bidSubmitted ? (
                 <div
                   style={{
                     display: "flex",
@@ -234,8 +235,9 @@ const MarketPlaceDetails = () => {
         </Col>
       </Row>
       <div style={{ marginBottom: "5rem" }}></div>
-      <div style={{ bottom:0, width:"100%" }}><Footer /></div>
-      
+      <div style={{ bottom: 0, width: "100%" }}>
+        <Footer />
+      </div>
     </>
   );
 };

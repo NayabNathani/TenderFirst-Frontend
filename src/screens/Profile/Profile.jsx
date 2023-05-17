@@ -13,6 +13,8 @@ import Breadcrumb from "../../components/BreadCrumb/breadcrumb";
 import Footer from "../../components/Footer/footer";
 import { Link } from "react-router-dom";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
+import Rating from "react-rating-stars-component";
+
 
 const Profile = ({ user }) => {
   // const [showModal, setShowModal] = useState(false);
@@ -196,7 +198,25 @@ const Profile = ({ user }) => {
                           ? user.categories.map((category) => (
                               <span key={category._id}>{category.title}, </span>
                             ))
-                          : ("None")}
+                          : "None"}
+                      </MDBCardText>
+                    </MDBCol>
+                  </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol sm="3">
+                      <MDBCardText>Rating</MDBCardText>
+                    </MDBCol>
+                    <MDBCol sm="9">
+                      <MDBCardText className="text-muted" style={{display:"grid", alignItems:"center"}}>
+                        <Rating
+                          count={5}
+                          value={user.rating}
+                          size={24}
+                          activeColor="#ffd700"
+                          edit={false}
+                        />
+                        {user.rating} out of 5
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>
