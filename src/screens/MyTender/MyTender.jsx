@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import API_URL from "../../config";
 import Rating from "react-rating-stars-component";
+import { toast } from "react-hot-toast";
 
 const MyTenders = ({ user }) => {
   const [tenders, setTenders] = useState([]);
@@ -13,8 +14,10 @@ const MyTenders = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [tendererIds, setTendererIds] = useState("");
   const [rating, setRating] = useState(0);
-  // const [showModal, setShowModal] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const [expandedTenders, setExpandedTenders] = useState([]);
 
   const fetchTenders = async (page) => {
     setIsLoading(true);
@@ -24,15 +27,20 @@ const MyTenders = ({ user }) => {
       { withCredentials: true }
     );
     const responseData = response.data.result.data; // Access the nested array of tenders
+    // console.log(response.data.result.data);
     setTotalPages(response.data.result.totalPages);
 
     if (Array.isArray(responseData) && responseData.length > 0) {
-      const mappedTenders = responseData.map((tenderee) => ({
-        id: tenderee._id,
-        title: tenderee.title,
-        body: tenderee.description,
-        status: tenderee.status,
-      }));
+      const mappedTenders = responseData.map((tender) => {
+        const tendererId = tender.tenderer && tender.tenderer._id;
+        return {
+          id: tender._id,
+          title: tender.title,
+          body: tender.description,
+          status: tender.status,
+          tendererId: tendererId || null, 
+        };
+      });
       // console.log(mappedTenders)
       setTenders(mappedTenders);
     }
@@ -41,7 +49,8 @@ const MyTenders = ({ user }) => {
 
   useEffect(() => {
     fetchTenders(currentPage);
-  }, [currentPage]);
+  }, [currentPage, flag]);
+
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -50,9 +59,14 @@ const MyTenders = ({ user }) => {
   const handleCompleted = async (id) => {
     try {
       await axios.post(
-        API_URL + `/tender/${id}/status`,
-        { status: "completed" },
-        { withCredentials: true }
+        API_URL + `/tender/completed`,
+        { 
+          tenderId: id,
+          status: "completed" 
+        },
+        { 
+          withCredentials: true 
+        }
       );
       setIsCompleted(true);
     } catch (error) {
@@ -66,19 +80,22 @@ const MyTenders = ({ user }) => {
       await axios.post(
         API_URL + "/rating/add",
         {
-          userId: tenders.find((tender) => tender.tenderer._id)
-            .tendererId,
+          userId: tendererIds,
           rating: rating,
         },
         { withCredentials: true }
       );
       setIsCompleted(false);
       setRating(0);
-      alert("Thank you for your rating!");
+      setFlag(!flag)
+      toast.success("Thank You For Your Rating!!");
     } catch (error) {
       console.error(error);
     }
   };
+
+
+
 
   return (
     <>
@@ -99,7 +116,28 @@ const MyTenders = ({ user }) => {
               <tr key={tenderee.id}>
                 <td>{(currentPage - 1) * 10 + index + 1}</td>
                 <td>{tenderee.title}</td>
-                <td>{tenderee.body}</td>
+                <td>
+                  {tenderee.body.length > 100 &&
+                  !expandedTenders.includes(tenderee.id)
+                    ? tenderee.body.substring(0, 100) + "..."
+                    : tenderee.body}
+                  {tenderee.body.length > 100 && (
+                    <button
+                      className="btn btn-link p-0 ms-2"
+                      onClick={() =>
+                        setExpandedTenders((prevState) =>
+                          prevState.includes(tenderee.id)
+                            ? prevState.filter((id) => id !== tenderee.id)
+                            : [...prevState, tenderee.id]
+                        )
+                      }
+                    >
+                      {expandedTenders.includes(tenderee.id)
+                        ? "See less"
+                        : "See more"}
+                    </button>
+                  )}
+                </td>
                 <td>
                   <Link to={`/mytender/${tenderee.id}`}>View Details</Link>
                 </td>
@@ -113,6 +151,7 @@ const MyTenders = ({ user }) => {
                         <Dropdown.Item
                           onClick={() => {
                             handleCompleted(tenderee.id);
+                            setTendererIds(tenderee.tendererId);
                             setIsCompleted(true);
                           }}
                           style={{ color: "black" }}
@@ -158,7 +197,7 @@ const MyTenders = ({ user }) => {
           <div className="rating-stars">
             <Rating
               count={5}
-              onChange={(rating) => setRating(rating)}
+              onChange={(rating) => {setRating(rating)}}
               size={24}
               activeColor="#ffd700"
             />

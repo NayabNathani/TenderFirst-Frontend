@@ -63,18 +63,13 @@ const OpenTender = () => {
     }
   }, []);
 
-  // console.log("now here", pool)
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
   };
-  // const handleSelectChange = (selectedOption, { name }) => {
-  //   const value = selectedOption ? selectedOption.value : [];
-  //   const newFormData = { ...formData, [name]: value };
-  //   setFormData(newFormData);
-  // };
+
+  
 
   const { user } = useSelector((state) => state.user);
 

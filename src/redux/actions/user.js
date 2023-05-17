@@ -33,6 +33,7 @@ export const logout = () => async(dispatch)=>{
 
 export const registerUser = (firstName,lastName,email,password,contactNumber,organizationName,pool,category) => async (dispatch) => {
     try {
+      console.log(category);
       dispatch({ type: "registerRequest" });
   
       const response = await axios.post(
@@ -59,4 +60,9 @@ export const registerUser = (firstName,lastName,email,password,contactNumber,org
   export const updateUserEmailSuccess = (newEmail) => ({
     type: "updateUserEmailSuccess",
     payload: newEmail,
+  });
+
+  export const updatePoolSuccess = (newPool) => ({
+    type: "updatePoolSuccess",
+    payload: newPool,
   });

@@ -56,6 +56,10 @@ export const userReducer = createReducer(initialState, {
   updateUserEmailSuccess: (state, action) => {
     state.user.email = action.payload;
   },
+
+  updatePoolSuccess: (state, action) => {
+    state.user.pool = action.payload;
+  },
   
   clearError: (state) => {
     state.error = null;

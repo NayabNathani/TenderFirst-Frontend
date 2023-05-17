@@ -71,7 +71,7 @@ const DropdownMenu = ({user}) => {
               <Text ml={2}>Mytender</Text>
             </Flex>
           </Link>
-          <Link to="/">
+          <Link to="/myprojects">
             <Flex alignItems="center" px={2} py={1} cursor="pointer">
               <FaCogs size={20} />
               <Text ml={2}>On Going Projects</Text>

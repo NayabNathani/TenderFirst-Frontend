@@ -24,6 +24,7 @@ import NotFound from "./components/NotFound/NotFound";
 import axios from "axios";
 import MyTenderDetails from "./screens/MyTenderDetail/MyTenderDetails";
 import MarketPlaceDetails from "./screens/MarketPlaceDetailPage/marketplaceDetails";
+import OnGoingProjects from "./screens/OnGoingProjects/OnGoingProjects";
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                   <Route path="/profile" element={<Profile user={user} />} />
                   <Route path="/updateprofile" element={<UpdateProfile />} />
                   <Route path="/mytender" element={<MyTenders user={user} />} />
+                  <Route path="/myprojects" element={<OnGoingProjects user={user} />} />
                   <Route path="/mytender/:id" element={<MyTenderDetails />} />
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/marketplace/:id" element={<MarketPlaceDetails />} />

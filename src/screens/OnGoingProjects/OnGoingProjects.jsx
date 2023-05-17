@@ -19,24 +19,30 @@ const OnGoingProjects = ({ user }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const [expandedTenders, setExpandedTenders] = useState([]);
+
 
   const fetchTenders = async (page) => {
     setIsLoading(true);
     const limit = 10;
     const response = await axios.get(
-      API_URL + `/tender?limit=${limit}&page=${page}&tendererId=${user._id}`,
+      API_URL + `/tender?limit=${limit}&page=${page}&tenderer=${user._id}`,
       { withCredentials: true }
     );
     const responseData = response.data.result.data; // Access the nested array of tenders
     setTotalPages(response.data.result.totalPages);
 
     if (Array.isArray(responseData) && responseData.length > 0) {
-      const mappedTenders = responseData.map((tenderer) => ({
-        id: tenderer._id,
-        title: tenderer.title,
-        body: tenderer.description,
-        status: tenderer.status,
-      }));
+      const mappedTenders = responseData.map((tender) => {
+        const tendereeOrg = tender.tenderee && tender.tenderee.organizationName;
+        return {
+          id: tender._id,
+          title: tender.title,
+          body: tender.description,
+          status: tender.status,
+          tendereeOrg: tendereeOrg || null,
+        };
+      });
       // console.log(mappedTenders)
       setTenders(mappedTenders);
     }
@@ -59,9 +65,9 @@ const OnGoingProjects = ({ user }) => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Title</th>
+              <th>Project Title</th>
               <th>Description</th>
-              <th>View Details</th>
+              <th>Organization Name</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -70,14 +76,33 @@ const OnGoingProjects = ({ user }) => {
               <tr key={tenderer.id}>
                 <td>{(currentPage - 1) * 10 + index + 1}</td>
                 <td>{tenderer.title}</td>
-                <td>{tenderer.body}</td>
                 <td>
-                  <Link to={`/mytender/${tenderer.id}`}>View Details</Link>
+                  {tenderer.body.length > 100 &&
+                  !expandedTenders.includes(tenderer.id)
+                    ? tenderer.body.substring(0, 100) + "..."
+                    : tenderer.body}
+                  {tenderer.body.length > 100 && (
+                    <button
+                      className="btn btn-link p-0 ms-2"
+                      onClick={() =>
+                        setExpandedTenders((prevState) =>
+                          prevState.includes(tenderer.id)
+                            ? prevState.filter((id) => id !== tenderer.id)
+                            : [...prevState, tenderer.id]
+                        )
+                      }
+                    >
+                      {expandedTenders.includes(tenderer.id)
+                        ? "See less"
+                        : "See more"}
+                    </button>
+                  )}
                 </td>
+                <td>{tenderer.tendereeOrg}</td>
                 <td style={{ alignItems: "center", textAlign: "center" }}>
                   <MDBBtn
                     color={
-                        tenderer.status === "pending"
+                      tenderer.status === "pending"
                         ? "danger"
                         : tenderer.status === "approved"
                         ? "success"
@@ -88,8 +113,8 @@ const OnGoingProjects = ({ user }) => {
                         : ""
                     }
                     className={
-                        tenderer.status === "approved" ||
-                        tenderer.status === "pending"
+                      tenderer.status === "approved" ||
+                      tenderer.status === "pending"
                         ? "opacity-70"
                         : {}
                     }

@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import axios from "axios";
 import API_URL from "../../config";
+import { Button } from "react-bootstrap";
+
 
 const LoginPage = () => {
 
@@ -22,16 +24,16 @@ const LoginPage = () => {
   const initialFormData = {
     pool: [],
     categories: [],
+    newCategory: "",
 
   };
   const [formData, setFormData] = useState(initialFormData);
   const [categories, setCategories] = useState([]);
   const [pool, setPool] = useState([]);
-
   const { user, error, isAuthenticated, registerSuccess } = useSelector(
     (state) => state.user
   );
-
+  const [flag, setFlag] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -46,6 +48,37 @@ const LoginPage = () => {
     dispatch(registerUser(firstName, lastName, email, password, contactNumber, organizationName, poolIds, formData.categories));
   };
 
+  const handleCategoryChange = (values) => {
+    const selectedCategories = values.map((value) => value.value);
+    setFormData({ ...formData, categories: selectedCategories });
+  };
+
+  const handleNewCategoryChange = (e) => {
+    setFormData({ ...formData, newCategory: e.target.value });
+  };
+
+  const handleAddCategory = () => {
+    const newCategory = formData.newCategory.trim();
+    if (newCategory === "") {
+      return;
+    }
+    axios
+      .post(API_URL + "/category/add", {
+        title: newCategory
+      }, { withCredentials: true })
+      .then((response) => {
+        const newCategoryOption = {
+          value: response.data.result._id,
+          label: response.data.result.title,
+        };
+        setCategories([...categories, newCategoryOption]);
+        setFormData({ ...formData, categories: [...formData.categories, newCategoryOption.value], newCategory: "" });
+        setFlag(!flag);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
 
   useEffect(() => {
     try {
@@ -60,7 +93,7 @@ const LoginPage = () => {
     } catch (error) {
       console.error(error.message);
     }
-  }, []);
+  }, [flag]);
 
   useEffect(() => {
     try {
@@ -80,7 +113,6 @@ const LoginPage = () => {
     }
   }, []);
 
-
   useEffect(() => {
     if (error) {
       toast.error("Incorrect Email/Password!");
@@ -92,11 +124,11 @@ const LoginPage = () => {
       toast.success(`Successfully registered!`);
     }
   }, [dispatch, error, isAuthenticated, navigate, registerSuccess, user]);
-
+  console.log(formData);
   return (
     <>
-      <Components.Container style={{ maxWidth: "100%", height: "700px" }}>
-        <Components.SignUpContainer signingIn={signIn} >
+      <Components.Container style={{ maxWidth: "100%", height: "900px" }}>
+        <Components.SignUpContainer signingIn={signIn}>
           <Components.Form onSubmit={handleSignUpSubmit}>
             <Components.Title>Create Account</Components.Title>
             <Components.Input type="text" value={firstName} placeholder="First Name" onChange={(e) => { setFname(e.target.value) }} />
@@ -105,6 +137,21 @@ const LoginPage = () => {
             <Components.Input type="password" value={password} placeholder="Password" onChange={(e) => { setPassword(e.target.value) }} />
             <Components.Input type="text" value={contactNumber} placeholder="Contact Number" onChange={(e) => { setContactNumber(e.target.value) }} />
             <Components.Input type="text" value={organizationName} placeholder="Organization Name" onChange={(e) => { setOrganizationName(e.target.value) }} />
+            <div style={{ marginBottom: "20px", marginLeft: "0", display: "flex",marginTop:"10px" }}>
+              <Select
+                options={[...categories]}
+                isMulti
+                onChange={handleCategoryChange}
+                value={categories.filter((category) => formData.categories.includes(category.value))}
+                placeholder="Select categories"
+              />
+
+              <div style={{padding:"10px"}}>OR</div>
+              <input autoComplete="off" type="text" id="newCategory" name="newCategory" value={formData.newCategory} onChange={handleNewCategoryChange} />
+              <Button style={{margin:"5px"}} variant="warning" type="button" onClick={handleAddCategory}>Add category</Button>
+            </div>
+
+
             <div style={{ marginBottom: "10px", marginLeft: "0" }}>
               <Select
                 options={pool}
@@ -115,24 +162,12 @@ const LoginPage = () => {
                 placeholder="Select Pool"
               />
             </div>
-
-            <div style={{ marginBottom: "10px", marginLeft: "0" }}>
-              <Select
-                options={categories}
-                isMulti={true}
-                onChange={(values) => {
-                  const selectedCategories = values.map((value) => value.value);
-                  setFormData({ ...formData, categories: selectedCategories });
-                }}
-                placeholder="Select Categories"
-              />
-            </div>
-
-
-
             <Components.Button>Sign Up</Components.Button>
           </Components.Form>
         </Components.SignUpContainer>
+
+
+
 
         <Components.SignInContainer signingIn={signIn}>
           <Components.Form onSubmit={handleLoginSubmit}>

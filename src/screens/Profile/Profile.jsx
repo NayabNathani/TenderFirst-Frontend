@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import Rating from "react-rating-stars-component";
 
-
 const Profile = ({ user }) => {
   // const [showModal, setShowModal] = useState(false);
   // const [newAvatar, setNewAvatar] = useState(null);
@@ -107,7 +106,6 @@ const Profile = ({ user }) => {
                     style={{ width: "150px" }}
                     fluid
                   />
-                  <p className="text-muted mb-4">{user.address}</p>
                   <div className="d-flex justify-content-center mb-2">
                     <Link to="/updateprofile">
                       <MDBBtn
@@ -208,7 +206,10 @@ const Profile = ({ user }) => {
                       <MDBCardText>Rating</MDBCardText>
                     </MDBCol>
                     <MDBCol sm="9">
-                      <MDBCardText className="text-muted" style={{display:"grid", alignItems:"center"}}>
+                      <MDBCardText
+                        className="text-muted"
+                        style={{ display: "grid", alignItems: "center" }}
+                      >
                         <Rating
                           count={5}
                           value={user.rating}
@@ -216,7 +217,7 @@ const Profile = ({ user }) => {
                           activeColor="#ffd700"
                           edit={false}
                         />
-                        {user.rating} out of 5
+                        {user.rating.toFixed(2)} out of 5
                       </MDBCardText>
                     </MDBCol>
                   </MDBRow>

@@ -3,12 +3,14 @@ import { Form, Button } from "react-bootstrap";
 import { FaLock } from "react-icons/fa";
 import Footer from "../../components/Footer/footer";
 import { useSelector } from "react-redux";
-import {useDispatch} from 'react-redux'
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { updateUserEmailSuccess } from "../../redux/actions/user";
+import { updatePoolSuccess, updateUserEmailSuccess } from "../../redux/actions/user";
 import API_URL from "../../config";
+import Select from "react-select";
+import { useEffect } from "react";
 
 const UpdateProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -16,9 +18,29 @@ const UpdateProfile = () => {
   // const [name, setName] = useState(user.firstName + " " + user.lastName);
   const [email, setEmail] = useState(user.email);
   const userId = user._id;
-  console.log(userId);
+  const [pool, setPool] = useState([]);
+  const [newPool, setNewPool] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    try {
+      axios
+        .get(API_URL + "/pool", { withCredentials: true })
+        .then((response) => {
+          const poolArray = response.data.result.data
+          // .map((pool) => {
+          //   return {
+          //     value: pool._id,
+          //     label: `${pool.title}  (${pool.minimumCost} - ${pool.maximumCost})`,
+          //   };
+          // });
+          setPool(poolArray);
+        });
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -27,23 +49,25 @@ const UpdateProfile = () => {
         userId: userId,
         updates: {
           email: email,
+          pool: newPool,
         },
       };
-  
+
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       };
-  
+
       const { data } = await axios.post(
         API_URL + "/user/update",
         updatedUser,
         config
       );
-      console.log(data); // log the updated user data
-      dispatch(updateUserEmailSuccess(email)); // dispatch the new action
+
+      dispatch(updateUserEmailSuccess(email));
+      dispatch(updatePoolSuccess(newPool)); // dispatch the new action
       toast.success("Updated Successfully");
       navigate("/profile");
     } catch (error) {
@@ -51,8 +75,6 @@ const UpdateProfile = () => {
       toast.error("Error Encountered!");
     }
   };
-  
-  
 
   return (
     <>
@@ -73,6 +95,19 @@ const UpdateProfile = () => {
               style={{ borderColor: "#ECC94B" }}
             />
           </Form.Group>
+
+          <div style={{ marginBottom: "10px", marginLeft: "0" }}>
+            <Form.Group className="mb-3">
+              <Select
+                options={pool.map(p => ({value: p, label: `${p.title} (${p.minimumCost}-${p.maximumCost})`}))}
+                isMulti={false}
+                onChange={(value) => {
+                  setNewPool(value.value);
+                }}
+                placeholder="Select Pool"
+              />
+            </Form.Group>
+          </div>
 
           <Button
             variant="warning"
