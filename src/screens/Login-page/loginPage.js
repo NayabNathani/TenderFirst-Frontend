@@ -174,7 +174,7 @@ const LoginPage = () => {
             <Components.Title>Sign in</Components.Title>
             <Components.Input type="email" value={email} placeholder="Email" onChange={(e) => { setEmail(e.target.value) }} />
             <Components.Input type="password" value={password} placeholder="Password" onChange={(e) => { setPassword(e.target.value) }} />
-            <Components.Anchor href="/">Forgot your password?</Components.Anchor>
+            {/* <Components.Anchor href="/">Forgot your password?</Components.Anchor> */}
             <Components.Button>Sign In</Components.Button>
           </Components.Form>
         </Components.SignInContainer>
