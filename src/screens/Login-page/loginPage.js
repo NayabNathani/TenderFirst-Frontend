@@ -152,7 +152,7 @@ const LoginPage = () => {
             </div>
 
 
-            <div style={{ marginBottom: "10px", marginLeft: "0" }}>
+            <div style={{ marginBottom: "10px", marginLeft: "0", width:'250px' }}>
               <Select
                 options={pool}
                 isMulti={false}
@@ -160,6 +160,7 @@ const LoginPage = () => {
                   setFormData({ ...formData, pool: value ? [value] : [] });
                 }}
                 placeholder="Select Pool"
+                style={{width:'100px'}}
               />
             </div>
             <Components.Button>Sign Up</Components.Button>

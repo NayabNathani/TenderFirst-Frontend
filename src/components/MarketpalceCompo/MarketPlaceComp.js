@@ -31,7 +31,6 @@ const MarketPlaceComp = () => {
     const fetchTenders = async () => {
       setIsLoading(true);
       const limit = 10;
-
       const response = await axios.get(
         API_URL + `/tender/users`, {
         params: {
@@ -57,13 +56,14 @@ const MarketPlaceComp = () => {
           createdAt: tender.createdAt,
           startDate: tender.startDate,
           endDate: tender.endDate,
-          isActive: new Date() <= new Date(tender.endDate),
+          isActive: new Date() <= new Date(tender.endDate) && new Date() >= new Date(tender.startDate),
           poolTitle: tender.pool.title
         }));
 
         setTenders(mappedTenders);
-        console.log("Here 2",mappedTenders)
-
+      }
+      else {
+        setTenders([]);
       }
       setIsLoading(false);
     };
@@ -149,7 +149,7 @@ const MarketPlaceComp = () => {
                       </Button>
                     ) : (
                       <Button variant="danger" disabled>
-                        Ended
+                        Inactive
                       </Button>
                     )}
                   </td>

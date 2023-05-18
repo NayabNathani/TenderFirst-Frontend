@@ -120,9 +120,9 @@ const UpdateProfile = () => {
           </Button>
         </Form>
       </div>
-      <div style={{ position: "absolute", bottom: 0, width: "100%" }}>
+      <div style={{marginBottom:"10rem"}}></div>
         <Footer />
-      </div>
+      
     </>
   );
 };

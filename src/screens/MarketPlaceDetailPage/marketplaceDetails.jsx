@@ -165,6 +165,7 @@ const MarketPlaceDetails = () => {
                       placeholder="Enter Estimated Cost"
                       value={estimatedCost}
                       onChange={(event) => setEstimatedCost(event.target.value)}
+                      min="0"
                     />
                   </Form.Group>
 
@@ -176,6 +177,7 @@ const MarketPlaceDetails = () => {
                       placeholder="Enter Estimated Days"
                       value={estimatedDays}
                       onChange={(event) => setEstimatedDays(event.target.value)}
+                      min="0"
                     />
                   </Form.Group>
 
@@ -187,6 +189,7 @@ const MarketPlaceDetails = () => {
                       placeholder="Enter your Experience"
                       value={experience}
                       onChange={(event) => setExperience(event.target.value)}
+                      min="0"
                     />
                   </Form.Group>
 
@@ -218,7 +221,7 @@ const MarketPlaceDetails = () => {
                   <div className="d-grid gap-2">
                     {Tenders.some(
                       (Tender) => Tender.tenderee._id === user._id
-                    ) ? (
+                    ) || Tenders.some((Tender) => new Date(Tender.startDate) >= new Date()) ? (
                       <Button variant="warning" type="submit" disabled>
                         Submit Bid
                       </Button>
