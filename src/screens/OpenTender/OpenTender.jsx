@@ -150,7 +150,7 @@ const OpenTender = () => {
             value={formData.quantity}
             required
             onChange={handleChange}
-            min="0"
+            min='0'
           />
         </Form.Group>
         <Form.Group controlId="pool">
@@ -176,6 +176,7 @@ const OpenTender = () => {
             value={formData.timeLimit}
             onChange={handleChange}
             required
+            min='1'
           />
         </Form.Group>
 
